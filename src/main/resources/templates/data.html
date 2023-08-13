@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Image Anno</title>
+
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="lib/layui-v2.8.13/layui/css/layui.css" rel="stylesheet">
+    <link href="lib/annotorious2.7.11/css/annotorious.min.css" rel="stylesheet">
+
+    <script type="text/javascript" src="lib/jquery3.6.0/jquery-3.6.0.js"></script>
+    <script type="text/javascript" src="lib/layui-v2.8.13/layui/layui.js"></script>
+    <script type="text/javascript" src="lib/annotorious2.7.11/js/annotorious.min.js"></script>
+    <!-- Selector Pack plugin -->
+    <script src="lib/annotorious2.7.11/js/annotorious-selector-pack.min.js"></script>
+</head>
+<body>
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <div class="layui-logo layui-hide-xs layui-bg-black">Image Anno</div>
+        <!-- 头部区域（可配合layui 已有的水平导航） -->
+        <ul class="layui-nav layui-layout-left">
+            <!-- 移动端显示 -->
+            <li class="layui-nav-item layui-show-xs-inline-block layui-hide-sm" lay-header-event="menuLeft">
+                <i class="layui-icon layui-icon-spread-left"></i>
+            </li>
+            <li class="layui-nav-item layui-hide-xs"><a href="javascript:;">nav 1</a></li>
+            <li class="layui-nav-item layui-hide-xs"><a href="javascript:;">nav 2</a></li>
+            <li class="layui-nav-item layui-hide-xs"><a href="javascript:;">nav 3</a></li>
+            <li class="layui-nav-item">
+                <a href="javascript:;">nav groups</a>
+                <dl class="layui-nav-child">
+                    <dd><a href="javascript:;">menu 11</a></dd>
+                    <dd><a href="javascript:;">menu 22</a></dd>
+                    <dd><a href="javascript:;">menu 33</a></dd>
+                </dl>
+            </li>
+        </ul>
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item layui-hide layui-show-sm-inline-block">
+                <a href="javascript:;">
+                    <img src="//unpkg.com/outeres@0.0.10/img/layui/icon-v2.png" class="layui-nav-img">
+                    tester
+                </a>
+                <dl class="layui-nav-child">
+                    <dd><a href="javascript:;">Your Profile</a></dd>
+                    <dd><a href="javascript:;">Settings</a></dd>
+                    <dd><a href="javascript:;">Sign out</a></dd>
+                </dl>
+            </li>
+            <li class="layui-nav-item" lay-header-event="menuRight" lay-unselect>
+                <a href="javascript:;">
+                    <i class="layui-icon layui-icon-more-vertical"></i>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            <ul class="layui-nav layui-nav-tree" lay-filter="test">
+                <li class="layui-nav-item layui-nav-itemed"><a href="javascript:;" id="todata">数据集</a></li>
+                <li class="layui-nav-item"><a class="" href="javascript:;" id="totask">任务</a></li>
+                <li class="layui-nav-item"><a href="javascript:;">选择</a></li>
+                <li class="layui-nav-item"><a href="javascript:;">移动</a></li>
+                <li class="layui-nav-item"><a href="javascript:;" id="POINT">点</a></li>
+                <li class="layui-nav-item"><a href="javascript:;" id="RECTANGLE">矩形</a></li>
+                <li class="layui-nav-item"><a href="javascript:;" id="POLYGON">多边形</a></li>
+                <li class="layui-nav-item"><a href="javascript:;" id="SAVE">保存</a></li>
+                <li class="layui-nav-item"><a href="javascript:;" id="layui-icon-prev">上一张</a></li>
+                <li class="layui-nav-item"><a href="javascript:;" id="layui-icon-next">下一张</a></li>
+
+            </ul>
+        </div>
+    </div>
+    <div class="layui-body">
+        <!-- 内容主体区域 -->
+        <div style="padding: 15px;">
+            <div class="layui-card layui-panel">
+                <div class="layui-card-header">
+                    <button type="button" class="layui-btn layui-btn-primary layui-bg-red" lay-on="create-data"><span class="layui-badge-dot"></span>创建任务</button>
+                </div>
+                <div class="layui-card-body">
+                    <table class="layui-hide" id="ID-table-show-data"></table>
+                </div>
+            </div>
+            <br><br>
+        </div>
+    </div>
+    <div class="layui-footer">
+        <!-- 底部固定区域 -->
+        底部固定区域
+    </div>
+</div>
+<script>
+    layui.use(function() {
+        var table = layui.table;
+        var form = layui.form;
+        var util = layui.util;
+        var upload = layui.upload;
+
+        // 创建表格实例
+        table.render({
+            elem: '#ID-table-show-data',
+            url: '/static/2.8/json/table/user.json', // 此处为静态模拟数据，实际使用时需换成真实接口
+            cols:
+                [
+                    [
+                        {type: 'radio', title: '😊', fixed: true}, // 单选框
+                        {field: 'id', title: 'ID', width: 80, sort: true, fixed: true},
+                        {field: 'dataName', title: '数据集名', width: 100},
+                        {field: 'dataInPath', title: '导入路径', width: 100},
+                        {field: 'dataOutPath', title: '导出路径', width: 100},
+                        {field: 'tagWay', title: '标注格式'},
+                        {field: 'date', title: '创建时间', width: 100},
+                        {field: 'owner', title: '创建人', width: 80},
+                    ]
+                ],
+            page: true,
+            height: 310
+        });
+        //弹出层-创建数据集事件
+        util.on('lay-on', {
+            'create-data': function(){
+                layer.open({
+                    type: 1,
+                    area: '500px',
+                    resize: false,
+                    shadeClose: true,
+                    title: '创建数据集',
+                    content: `
+          <div class="layui-form" lay-filter="filter-test-layer" style="margin: 16px;">
+            <div class="demo-login-container">
+              <div class="layui-form-item">数据集名称<span style="color: red;">*</span>
+                <div class="layui-input-wrap">
+                  <input type="text" name="dataName" value="" lay-verify="required" placeholder="数据集名"  autocomplete="off" class="layui-input" lay-affix="clear">
+                </div>
+              </div>
+              <div class="layui-form-item">导入路径<span style="color: red;">*</span>
+                <div class="layui-input-wrap">
+                  <input type="text" name="dataInPath" value="" lay-verify="required" placeholder="请写绝对路径"  autocomplete="off" class="layui-input" lay-affix="clear">
+                </div>
+              </div>
+              <div class="layui-form-item">导出路径<span style="color: red;">*</span>
+                <div class="layui-input-wrap">
+                <input type="text" name="dataOutPath" value="" lay-verify="required" placeholder="请写绝对路径"  autocomplete="off" class="layui-input" lay-affix="clear">
+                </div>
+              </div>
+              <div class="layui-form-item">标注格式<span style="color: red;">*</span>
+                <div class="layui-input-wrap">
+                  <select name="tagWay">
+                      <option value="">选择标注格式</option>
+                      <option name="tagWay" value="PascalVOC">PascalVOC</option>
+                      <option name="tagWay" value="COCO" disabled>COCO</option>
+                      <option name="tagWay" value="YOLO">YOLO</option>
+                      <option name="tagWay" value="DOTA" disabled>DOTA</option>
+                  </select>
+                </div>
+              </div>
+              <div class="layui-form-item">
+                <button class="layui-btn layui-btn-fluid" lay-submit lay-filter="demo-login">确定</button>
+              </div>
+            </div>
+          </div>
+        `,
+                    success: function(){
+                        // 对弹层中的表单进行初始化渲染
+                        form.render();
+                        // 表单提交事件
+                        form.on('submit(demo-login)', function(data){
+                            var field = data.field; // 获取表单字段值
+                            // 显示填写结果，仅作演示用
+                            layer.alert(JSON.stringify(field), {
+                                title: '当前填写的字段值'
+                            });
+                            // 此处可执行 Ajax 等操作
+                            // …
+                            return false; // 阻止默认 form 跳转
+                        });
+                    }
+                });
+            }
+        })
+
+        // 渲染
+        upload.render({
+            elem: '#ID-upload-in-data',
+            url: '', // 此处配置你自己的上传接口即可
+            auto: false,
+            multiple: true,
+            // bindAction: '#ID-upload-demo-action',
+            done: function(res){
+                layer.msg('上传成功');
+                console.log(res)
+            }
+        });
+    })
+
+    $('#totask').on("click", function () {
+        window.location.href = '/imageanno/task';
+    });
+</script>
+
+</body>
+</html>

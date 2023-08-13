@@ -1,0 +1,10 @@
+# ServerProperties
+server:
+  port: 8080 #端口号
+  servlet:
+    context-path: /imageanno #上下文根
+
+# ThymeleafProperties
+spring:
+  thymeleaf:
+    cache: false
