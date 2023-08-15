@@ -141,3 +141,43 @@ layui.use(['element', 'layer', 'util'], function(){
     <button onclick="next()">next</button>
 </div>
 
+<script>
+                  layui.use('table', function() {
+                    var table = layui.table;
+                    table.render({
+                      elem : '#demo',
+                      url : 'controller路径',
+                      { field: 'id',
+                       title: 'id'},
+                       { field: 'username',
+                       title: '用户名'},
+                       { field: 'sex',
+                       title: 性别'},
+                       { field: 'city',
+                       title: '城市'}
+                       ],//field是实体类属性
+                      even : true,
+                      page : true, //是否显示分页
+                      limits : [ 5, 10 ], //控制多少行一页（默认五条一页）
+                      limit : 5 //每页默认显示的数量
+                    });
+                    });
+</script>
+                  <table class="layui-hide" id="demo" lay-filter="demo"></table>
+
+
+
+                  $.ajax({
+                                      url:"/imageanno/task/select",
+                                      data:{page:1,limit :1},
+                                      type:"GET",
+                                      success:function (data) {
+                                          // var jsonObj = JSON.parse(data);
+                                          console.log("anno --------1111111111111");
+                                          console.log(data);
+                                          // if(data.msg === "success"){
+                                          //     // window.location.href = '/imageanno/anno?taskId='+taskId;
+                                          // }
+                                      },
+                                      // dataType : "html"
+                                  });

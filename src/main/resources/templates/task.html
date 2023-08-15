@@ -108,8 +108,20 @@
         底部固定区域
     </div>
 </div>
+<script type="text/html" id="barDemo">
+    <div class="layui-clear-space">
+        <a class="layui-btn layui-btn-xs" lay-event="manual_anno" id="manualAnno">标注</a>
+        <a class="layui-btn layui-btn-xs layui-bg-red" lay-event="auto_anno">智能标注</a>
+        <a class="layui-btn layui-btn-xs " lay-event="check">校验</a>
+        <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+        <a class="layui-btn layui-btn-xs" lay-event="more">
+            更多
+            <i class="layui-icon layui-icon-down"></i>
+        </a>
+    </div>
+</script>
 <script>
-    layui.use(function(){
+    layui.use('table',function(){
         var table = layui.table;
         var form = layui.form;
         var util = layui.util;
@@ -117,26 +129,46 @@
         // 创建表格实例
         table.render({
             elem: '#ID-table-demo-search',
-            url: '/static/2.8/json/table/user.json', // 此处为静态模拟数据，实际使用时需换成真实接口
+            url: '/imageanno/task/list', // 此处为静态模拟数据，实际使用时需换成真实接口
             cols:
                 [
                     [
                         {type: 'radio', title: '😊', fixed: true}, // 单选框
-                        {field:'id', title: 'ID', width:80, sort: true, fixed: true},
-                        {field:'taskName', title: '任务名', width:80},
+                        {field:'id', title: 'ID', width:40, sort: true, fixed: true},
+                        {field:'taskId', title: 'taskId', hide:true},
+                        {field:'taskName', title: '任务名', width:120},
                         {field:'taskStatus', title: '状态', width:80},
                         {field:'taskType', title: '标注类型', width:100},
-                        {field:'data', title: '数据集', width:80},
-                        {field:'tag', title: '标签集',width: 80},
-                        {field:'taskWay', title: '智能标注', width:100, sort: true},
-                        {field:'model', title: '标注模型', width:100},
-                        {field:'operation', title: '操作', sort: true},
-                        {field:'date', title: '创建时间',width: 100},
-                        {field:'owner', title: '创建人',width: 80},
+                        {field:'dataName', title: '数据集名', width:130},
+                        {field:'tag', title: '标签集',width: 120},
+                        {field:'taskWay', title: '标注方式', width:100},
+                        {field:'modelName', title: '标注模型', width:120},
+                        {fixed: '', title:'操作', toolbar: '#barDemo'},
+                        {field:'createTime', title: '创建时间',width: 100, sort: true},
+                        {field:'updateTime', title: '更新时间',width: 100, sort: true},
+                        {field:'creator', title: '创建人',width: 80},
                     ]
                 ],
+            limits: [10, 20, 50, 100],
+            limit: 10,
             page: true,
-            height: 310
+            skin: 'row',
+            even: true,
+            height: 310,
+        });
+
+        // 触发单元格工具事件
+        table.on('tool(ID-table-demo-search)', function(obj){ // 双击 toolDouble
+            var data = obj.data; // 获得当前行数据
+            var taskId = data.taskId;
+            // console.log(obj)
+            if(obj.event === 'manual_anno'){
+                //
+                window.location.href = '/imageanno/manualAnno?taskId='+taskId;
+
+            } else if(obj.event === 'more'){
+
+            }
         });
 
         // 搜索提交
@@ -179,11 +211,11 @@
               </div>
               <div class="layui-form-item">数据集<span style="color: red;">*</span>
                 <div class="layui-input-wrap">
-                  <select name="data">
+                  <select name="dataName">
                       <option value="">选择数据集</option>
-                      <option name="data" value="AAA">选项 A</option>
-                      <option name="data" value="BBB" disabled>选项 B（禁用选项）</option>
-                      <option name="data" value="CCC">选项 C</option>
+                      <option name="dataName" value="AAA">选项 A</option>
+                      <option name="dataName" value="BBB" disabled>选项 B（禁用选项）</option>
+                      <option name="dataName" value="CCC">选项 C</option>
                   </select>
                 </div>
               </div>
@@ -200,11 +232,11 @@
               </div>
               <div class="layui-form-item">标注模型<span style="color: red;">*</span>
                 <div class="layui-input-wrap">
-                  <select name="model">
+                  <select name="modelName">
                       <option value="">选择标注模型</option>
-                      <option name="model" value="AAA">选项 A</option>
-                      <option name="model" value="BBB" disabled>选项 B（禁用选项）</option>
-                      <option name="model" value="CCC">选项 C</option>
+                      <option name="modelName" value="AAA">选项 A</option>
+                      <option name="modelName" value="BBB" disabled>选项 B（禁用选项）</option>
+                      <option name="modelName" value="CCC">选项 C</option>
                   </select>
                 </div>
               </div>
@@ -238,6 +270,8 @@
     $('#todata').on("click", function () {
         window.location.href = '/imageanno/data';
     });
+
+
 </script>
 </body>
 </html>

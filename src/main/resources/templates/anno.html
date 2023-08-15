@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title>Image Anno</title>
@@ -72,6 +72,16 @@
                 <li class="layui-nav-item"><a href="javascript:;" id="layui-icon-next">下一张</a></li>
 
             </ul>
+
+        </div>
+        <table class="layui-hide layui-bg-black" id="ID-table-show-data-in-path"></table>
+        <div class="layui-row">
+            <div class="layui-col-xs6">
+                <div class="grid-demo grid-demo-bg1">6/12</div>
+            </div>
+            <div class="layui-col-xs6">
+                <div class="grid-demo">6/12</div>
+            </div>
         </div>
     </div>
     <div class="layui-body">
@@ -93,7 +103,8 @@
     </div>
     <div class="layui-footer">
         <!-- 底部固定区域 -->
-        当前任务：<span></span>
+        任务名：<span class="layui-badge-rim" th:text="${task.taskName}"></span>
+        标签集：<span class="layui-badge-rim" th:text="${task.tag}"></span>
     </div>
 </div>
 
@@ -107,7 +118,7 @@
             drawOnSingleClick: true,
             enableEdgeControls: true,
             widgets: [
-                { widget: 'TAG' },
+                { widget: 'TAG' ,vocabulary: [ '人', '火车', '信号灯']},
                 // { widget: 'TAG', vocabulary: [ 'Animal', 'Building', 'Waterbody'] }
             ]
         };
@@ -139,10 +150,9 @@
 
     //JS
     layui.use(['element', 'layer', 'util'], function(){
-        var element = layui.element;
         var layer = layui.layer;
         var util = layui.util;
-        var $ = layui.$;
+        var table = layui.table;
 
         //头部事件
         util.event('lay-header-event', {
@@ -150,10 +160,11 @@
                 layer.msg('展开左侧菜单的操作', {icon: 0});
             },
             menuRight: function(){  // 右侧菜单事件
+
                 layer.open({
                     type: 1,
-                    title: '更多',
-                    content: '<div style="padding: 15px;">处理右侧面板的操作</div>',
+                    title: '标签信息',
+                    content: '<div style="padding: 15px;"><span th:text="${task.tag}" id="tag"></span><br></div>',
                     area: ['260px', '100%'],
                     offset: 'rt', // 右上角
                     anim: 'slideLeft', // 从右侧抽屉滑出
@@ -161,6 +172,22 @@
                     scrollbar: false
                 });
             }
+        });
+        // 创建表格实例
+        table.render({
+            elem: '#ID-table-show-data-in-path',
+            url: '', // 此处为静态模拟数据，实际使用时需换成真实接口
+            cols:
+                [
+                    [
+                        {type: 'radio', title: '😊', fixed: true}, // 单选框
+                        {field: 'PathName', title: '数据集名', width: 100}
+                    ]
+                ],
+            page: true,
+            skin: 'row',
+            even: true,
+            height: 310
         });
     });
 

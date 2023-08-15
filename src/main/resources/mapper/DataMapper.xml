@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.trainimageannotation.dao.DataDao">
+
+    <resultMap id="dataMap" type="com.example.trainimageannotation.po.Data">
+        <id column="id" property="id"/>
+        <result column="data_id" property="dataId"/>
+        <result column="data_name" property="dataName"/>
+        <result column="data_in_path" property="dataInPath"/>
+        <result column="data_out_path" property="dataOutPath"/>
+        <result column="tag_way" property="tagWay"/>
+        <result column="creator" property="creator"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <select id="selectDataById" resultMap="dataMap">
+        SELECT id, data_name, data_in_path, data_out_path, tag_way,creator,create_time,update_time
+        FROM data
+        where data_id = #{dataId}
+    </select>
+    <select id="selectDataList" resultMap="dataMap">
+        SELECT id, data_id,data_name, data_in_path, data_out_path, tag_way,creator,create_time,update_time
+        FROM data
+        order by create_time desc
+        limit #{offset},#{limit}
+    </select>
+    <select id="selectDataCount" resultType="java.lang.Long">
+        SELECT COUNT(id) FROM data
+    </select>
+
+</mapper>

@@ -1,0 +1,15 @@
+
+{"id":"1",
+  "taskId":"100001",
+  "taskName":"测试任务",
+  "taskStatus":"0",
+  "taskType":"1",
+  "dataId":"1001",
+  "tag": "人,火车,信号灯",
+  "taskWay": "0",
+  "modelId":"0",
+  "creator":"lmj",
+  "createTime":"Mon Aug 14 10:13:23 CST 2023",
+  "updateTime":"Mon Aug 14 10:13:25 CST 2023"
+}
+

@@ -104,21 +104,26 @@
         // 创建表格实例
         table.render({
             elem: '#ID-table-show-data',
-            url: '/static/2.8/json/table/user.json', // 此处为静态模拟数据，实际使用时需换成真实接口
+            url: '/imageanno/data/list', // 此处为静态模拟数据，实际使用时需换成真实接口
             cols:
                 [
                     [
                         {type: 'radio', title: '😊', fixed: true}, // 单选框
-                        {field: 'id', title: 'ID', width: 80, sort: true, fixed: true},
+                        {field: 'id', title: 'ID', width: 40, sort: true, fixed: true},
                         {field: 'dataName', title: '数据集名', width: 100},
-                        {field: 'dataInPath', title: '导入路径', width: 100},
-                        {field: 'dataOutPath', title: '导出路径', width: 100},
-                        {field: 'tagWay', title: '标注格式'},
-                        {field: 'date', title: '创建时间', width: 100},
-                        {field: 'owner', title: '创建人', width: 80},
+                        {field: 'dataInPath', title: '导入路径'},
+                        {field: 'dataOutPath', title: '导出路径'},
+                        {field: 'tagWay', title: '标注格式', width: 100},
+                        {field:'createTime', title: '创建时间',width: 100},
+                        {field:'updateTime', title: '更新时间',width: 100},
+                        {field:'creator', title: '创建人',width: 80},
                     ]
                 ],
+            limits: [10, 20, 50, 100],
+            limit: 10,
             page: true,
+            skin: 'row',
+            even: true,
             height: 310
         });
         //弹出层-创建数据集事件
