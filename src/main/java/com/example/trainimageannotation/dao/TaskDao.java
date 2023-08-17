@@ -14,4 +14,5 @@ public interface TaskDao {
     Task selectTaskById(Long taskId);
     Long selectTaskCount();
     int updateTaskStatus(Task task);
+    List<Task> selectTaskByStatus(List<Integer> taskStatusList);
 }

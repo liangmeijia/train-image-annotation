@@ -29,6 +29,14 @@
         FROM task
         WHERE task_id = #{taskId}
     </select>
+    <select id="selectTaskByStatus" resultMap="taskMap">
+        SELECT id, task_id, task_name, task_status, task_type, data_id,tag,task_way,model_id,creator,create_time,update_time
+        FROM task
+        WHERE task_status in
+        <foreach item="item" index="index" collection="taskStatusList" open="(" separator="," close=")">
+        #{item}
+        </foreach>
+    </select>
     <select id="selectTaskCount" resultType="java.lang.Long">
         SELECT COUNT(id) FROM task
     </select>

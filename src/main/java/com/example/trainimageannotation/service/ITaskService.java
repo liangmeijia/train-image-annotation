@@ -11,6 +11,7 @@ import java.util.List;
 public interface ITaskService {
     List<TaskVo> showTaskVoList(int offset, int limit);
     Task showTaskById(Long taskId);
+    List<TaskVo> showTaskByStatus(List<Integer> taskStatusList);
     Long getTaskCounts();
     int updateTaskStatus(Task task);
 }

@@ -22,5 +22,13 @@ public class HomeController {
     public String  data(){
         return "data";
     }
+    @RequestMapping(value = "/model",method = RequestMethod.GET)
+    public String  model(){
+        return "model";
+    }
+    @RequestMapping(value = "/work",method = RequestMethod.GET)
+    public String  work(){
+        return "work";
+    }
 
 }

@@ -10,7 +10,7 @@ public class Task {
     private Long taskId;
     private String taskName;
     /**
-     * 任务状态（0-新建状态，1-人工自动标注状态，2...）
+     * 任务状态(0-新建状态；1-手工标注中状态；2-手工标注完成状态；3-自动标注中状态；4-自动标注完成状态；5-人工校验中状态；6-人工校验完成状态)
      */
     private int taskStatus;
     /**

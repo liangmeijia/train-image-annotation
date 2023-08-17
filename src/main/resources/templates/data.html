@@ -26,17 +26,10 @@
             <li class="layui-nav-item layui-show-xs-inline-block layui-hide-sm" lay-header-event="menuLeft">
                 <i class="layui-icon layui-icon-spread-left"></i>
             </li>
-            <li class="layui-nav-item layui-hide-xs"><a href="javascript:;">nav 1</a></li>
-            <li class="layui-nav-item layui-hide-xs"><a href="javascript:;">nav 2</a></li>
-            <li class="layui-nav-item layui-hide-xs"><a href="javascript:;">nav 3</a></li>
-            <li class="layui-nav-item">
-                <a href="javascript:;">nav groups</a>
-                <dl class="layui-nav-child">
-                    <dd><a href="javascript:;">menu 11</a></dd>
-                    <dd><a href="javascript:;">menu 22</a></dd>
-                    <dd><a href="javascript:;">menu 33</a></dd>
-                </dl>
-            </li>
+            <li class="layui-nav-item layui-hide-xs"><a href="javascript:;" id="todata">数据集</a></li>
+            <li class="layui-nav-item layui-hide-xs"><a class="" href="javascript:;" id="tomodel">模型</a></li>
+            <li class="layui-nav-item layui-hide-xs"><a class="" href="javascript:;" id="totask">任务</a></li>
+            <li class="layui-nav-item"><a href="javascript:;" id="towork">工作台</a></li>
         </ul>
         <ul class="layui-nav layui-layout-right">
             <li class="layui-nav-item layui-hide layui-show-sm-inline-block">
@@ -61,9 +54,7 @@
         <div class="layui-side-scroll">
             <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
             <ul class="layui-nav layui-nav-tree" lay-filter="test">
-                <li class="layui-nav-item layui-nav-itemed"><a href="javascript:;" id="todata">数据集</a></li>
-                <li class="layui-nav-item"><a class="" href="javascript:;" id="totask">任务</a></li>
-                <li class="layui-nav-item"><a href="javascript:;">选择</a></li>
+                <li class="layui-nav-item layui-nav-itemed"><a href="javascript:;">选择</a></li>
                 <li class="layui-nav-item"><a href="javascript:;">移动</a></li>
                 <li class="layui-nav-item"><a href="javascript:;" id="POINT">点</a></li>
                 <li class="layui-nav-item"><a href="javascript:;" id="RECTANGLE">矩形</a></li>
@@ -80,7 +71,7 @@
         <div style="padding: 15px;">
             <div class="layui-card layui-panel">
                 <div class="layui-card-header">
-                    <button type="button" class="layui-btn layui-btn-primary layui-bg-red" lay-on="create-data"><span class="layui-badge-dot"></span>创建任务</button>
+                    <button type="button" class="layui-btn layui-btn-primary layui-bg-red" lay-on="create-data"><span class="layui-badge-dot"></span>创建数据集</button>
                 </div>
                 <div class="layui-card-body">
                     <table class="layui-hide" id="ID-table-show-data"></table>
@@ -188,23 +179,16 @@
                 });
             }
         })
-
-        // 渲染
-        upload.render({
-            elem: '#ID-upload-in-data',
-            url: '', // 此处配置你自己的上传接口即可
-            auto: false,
-            multiple: true,
-            // bindAction: '#ID-upload-demo-action',
-            done: function(res){
-                layer.msg('上传成功');
-                console.log(res)
-            }
-        });
     })
 
     $('#totask').on("click", function () {
         window.location.href = '/imageanno/task';
+    });
+    $('#tomodel').on("click", function () {
+        window.location.href = '/imageanno/model';
+    });
+    $('#towork').on("click", function () {
+        window.location.href = '/imageanno/work';
     });
 </script>
 

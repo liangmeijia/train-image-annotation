@@ -2,6 +2,7 @@ package com.example.trainimageannotation.controller;
 
 
 import com.alibaba.fastjson.JSONObject;
+import com.example.trainimageannotation.po.Task;
 import com.example.trainimageannotation.service.ITaskService;
 import com.example.trainimageannotation.vo.EasyResult;
 import com.example.trainimageannotation.vo.TaskVo;
@@ -36,5 +37,11 @@ public class TaskController {
         System.out.println(JSONObject.toJSONString(taskVoEasyResult));
         return taskVoEasyResult;
     }
-
+    @RequestMapping(value = "/task/one",method = RequestMethod.GET)
+    @ResponseBody
+    public Task showTaskOne(Long taskId){
+        Task task = taskService.showTaskById(taskId);
+        System.out.println(JSONObject.toJSONString(task));
+        return task;
+    }
 }

@@ -9,7 +9,6 @@ spring:
   # ThymeleafProperties
   thymeleaf:
     cache: false
-
   # DataSourceProperties
   datasource:
     url:

@@ -15,10 +15,10 @@ import java.util.Map;
 public class ReadFileUtilTest {
     @Test
     public void TaskTest(){
-//        Map<String, String> filesDatas = ReadFileUtil.getFilesDatas("C:\\Users\\LENOVO\\Pictures\\稿件编号_退修--图");
-//        System.out.println(filesDatas);
-        ArrayList<File> fileArrayList = new ArrayList<>();
-        ReadFileUtil.getFiles(fileArrayList,"C:\\Users\\LENOVO\\Pictures\\稿件编号_退修--图");
-        System.out.println(fileArrayList);
+        Map<String, String> filesDatas = ReadFileUtil.getFilesDatas("C:\\Users\\LENOVO\\Pictures\\稿件编号_退修--图");
+        System.out.println(filesDatas);
+//        ArrayList<File> fileArrayList = new ArrayList<>();
+//        ReadFileUtil.getFiles(fileArrayList,"C:\\Users\\LENOVO\\Pictures\\稿件编号_退修--图");
+//        System.out.println(fileArrayList);
     }
 }

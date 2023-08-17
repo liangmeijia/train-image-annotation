@@ -26,17 +26,10 @@
             <li class="layui-nav-item layui-show-xs-inline-block layui-hide-sm" lay-header-event="menuLeft">
                 <i class="layui-icon layui-icon-spread-left"></i>
             </li>
-            <li class="layui-nav-item layui-hide-xs"><a href="javascript:;">nav 1</a></li>
-            <li class="layui-nav-item layui-hide-xs"><a href="javascript:;">nav 2</a></li>
-            <li class="layui-nav-item layui-hide-xs"><a href="javascript:;">nav 3</a></li>
-            <li class="layui-nav-item">
-                <a href="javascript:;">nav groups</a>
-                <dl class="layui-nav-child">
-                    <dd><a href="javascript:;">menu 11</a></dd>
-                    <dd><a href="javascript:;">menu 22</a></dd>
-                    <dd><a href="javascript:;">menu 33</a></dd>
-                </dl>
-            </li>
+            <li class="layui-nav-item layui-hide-xs"><a href="javascript:;" id="todata">数据集</a></li>
+            <li class="layui-nav-item layui-hide-xs"><a class="" href="javascript:;" id="tomodel">模型</a></li>
+            <li class="layui-nav-item layui-hide-xs"><a class="" href="javascript:;" id="totask">任务</a></li>
+            <li class="layui-nav-item"><a href="javascript:;" id="towork">工作台</a></li>
         </ul>
         <ul class="layui-nav layui-layout-right">
             <li class="layui-nav-item layui-hide layui-show-sm-inline-block">
@@ -61,9 +54,7 @@
         <div class="layui-side-scroll">
             <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
             <ul class="layui-nav layui-nav-tree" lay-filter="test">
-                <li class="layui-nav-item layui-nav-itemed"><a href="javascript:;" id="todata">数据集</a></li>
-                <li class="layui-nav-item"><a class="" href="javascript:;" id="totask">任务</a></li>
-                <li class="layui-nav-item"><a href="javascript:;">选择</a></li>
+                <li class="layui-nav-item layui-nav-itemed"><a href="javascript:;">选择</a></li>
                 <li class="layui-nav-item"><a href="javascript:;">移动</a></li>
                 <li class="layui-nav-item"><a href="javascript:;" id="POINT">点</a></li>
                 <li class="layui-nav-item"><a href="javascript:;" id="RECTANGLE">矩形</a></li>
@@ -80,10 +71,10 @@
         <div style="padding: 15px;">
             <div class="layui-card layui-panel">
                 <div class="layui-card-header">
-                    <button type="button" class="layui-btn layui-btn-primary layui-bg-red" lay-on="create-data"><span class="layui-badge-dot"></span>创建任务</button>
+                    <button type="button" class="layui-btn layui-btn-primary layui-bg-red" lay-on="create-model"><span class="layui-badge-dot"></span>创建模型</button>
                 </div>
                 <div class="layui-card-body">
-                    <table class="layui-hide" id="ID-table-show-data"></table>
+                    <table class="layui-hide" id="ID-table-show-model"></table>
                 </div>
             </div>
             <br><br>
@@ -99,21 +90,19 @@
         var table = layui.table;
         var form = layui.form;
         var util = layui.util;
-        var upload = layui.upload;
 
         // 创建表格实例
         table.render({
-            elem: '#ID-table-show-data',
-            url: '/imageanno/data/list', // 此处为静态模拟数据，实际使用时需换成真实接口
+            elem: '#ID-table-show-model',
+            url: '/imageanno/model/list', // 此处为静态模拟数据，实际使用时需换成真实接口
             cols:
                 [
                     [
                         {type: 'radio', title: '😊', fixed: true}, // 单选框
                         {field: 'id', title: 'ID', width: 40, sort: true, fixed: true},
-                        {field: 'dataName', title: '数据集名', width: 100},
-                        {field: 'dataInPath', title: '导入路径'},
-                        {field: 'dataOutPath', title: '导出路径'},
-                        {field: 'tagWay', title: '标注格式', width: 100},
+                        {field:'modelId', title: '模型id', hide:true},
+                        {field: 'modelName', title: '模型名', width: 100},
+                        {field: 'modelWeights', title: '模型权重'},
                         {field:'createTime', title: '创建时间',width: 100},
                         {field:'updateTime', title: '更新时间',width: 100},
                         {field:'creator', title: '创建人',width: 80},
@@ -126,42 +115,26 @@
             even: true,
             height: 310
         });
-        //弹出层-创建数据集事件
+        //弹出层-创建模型事件
         util.on('lay-on', {
-            'create-data': function(){
+            'create-model': function(){
                 layer.open({
                     type: 1,
                     area: '500px',
                     resize: false,
                     shadeClose: true,
-                    title: '创建数据集',
+                    title: '创建模型',
                     content: `
           <div class="layui-form" lay-filter="filter-test-layer" style="margin: 16px;">
             <div class="demo-login-container">
-              <div class="layui-form-item">数据集名称<span style="color: red;">*</span>
+              <div class="layui-form-item">模型名称<span style="color: red;">*</span>
                 <div class="layui-input-wrap">
-                  <input type="text" name="dataName" value="" lay-verify="required" placeholder="数据集名"  autocomplete="off" class="layui-input" lay-affix="clear">
+                  <input type="text" name="ModelName" value="" lay-verify="required" placeholder="模型名"  autocomplete="off" class="layui-input" lay-affix="clear">
                 </div>
               </div>
-              <div class="layui-form-item">导入路径<span style="color: red;">*</span>
+              <div class="layui-form-item">模型权重<span style="color: red;">*</span>
                 <div class="layui-input-wrap">
-                  <input type="text" name="dataInPath" value="" lay-verify="required" placeholder="请写绝对路径"  autocomplete="off" class="layui-input" lay-affix="clear">
-                </div>
-              </div>
-              <div class="layui-form-item">导出路径<span style="color: red;">*</span>
-                <div class="layui-input-wrap">
-                <input type="text" name="dataOutPath" value="" lay-verify="required" placeholder="请写绝对路径"  autocomplete="off" class="layui-input" lay-affix="clear">
-                </div>
-              </div>
-              <div class="layui-form-item">标注格式<span style="color: red;">*</span>
-                <div class="layui-input-wrap">
-                  <select name="tagWay">
-                      <option value="">选择标注格式</option>
-                      <option name="tagWay" value="PascalVOC">PascalVOC</option>
-                      <option name="tagWay" value="COCO" disabled>COCO</option>
-                      <option name="tagWay" value="YOLO">YOLO</option>
-                      <option name="tagWay" value="DOTA" disabled>DOTA</option>
-                  </select>
+                  <input type="text" name="modelWeights" value="" lay-verify="required" placeholder="请写绝对路径"  autocomplete="off" class="layui-input" lay-affix="clear">
                 </div>
               </div>
               <div class="layui-form-item">
@@ -189,22 +162,16 @@
             }
         })
 
-        // 渲染
-        upload.render({
-            elem: '#ID-upload-in-data',
-            url: '', // 此处配置你自己的上传接口即可
-            auto: false,
-            multiple: true,
-            // bindAction: '#ID-upload-demo-action',
-            done: function(res){
-                layer.msg('上传成功');
-                console.log(res)
-            }
-        });
     })
 
     $('#totask').on("click", function () {
         window.location.href = '/imageanno/task';
+    });
+    $('#todata').on("click", function () {
+        window.location.href = '/imageanno/data';
+    });
+    $('#towork').on("click", function () {
+        window.location.href = '/imageanno/work';
     });
 </script>
 

@@ -18,12 +18,12 @@ import java.util.Map;
  */
 public class ReadFileUtil {
     /**
-     * 获取路径path下的所有文件名，包括子文件夹
+     * 获取路径filePath下所有文件的路径，包括其子文件夹下的文件
      * @param fileList
-     * @param path
+     * @param filePath 文件夹路径
      */
-    public static void getFiles(ArrayList<File> fileList, String path) {
-        File[] allFiles = new File(path).listFiles();
+    public static void getFiles(ArrayList<File> fileList, String filePath) {
+        File[] allFiles = new File(filePath).listFiles();
         for (int i = 0; i < allFiles.length; i++) {
             File file = allFiles[i];
 
@@ -34,32 +34,16 @@ public class ReadFileUtil {
             }
         }
     }
-    public  static void getFiles2Dir(List<String> list, String path) {
-        File[] allFiles = new File(path).listFiles();
-        for (int i = 0; i < allFiles.length; i++) {
-            File file = allFiles[i];
 
-            if (file.isFile()) {
-                //fileList.add(file);
-            } else  {
-                //map.put(k++,file.toString().split("JPEGImages/")[1]);
-                list.add(file.toString().split("JPEGImages")[1].substring(1));
-            }
-        }
+    /**
+     * 获取filePath下的所有文件名
+     * @param filePath
+     */
+    public static String[] getFileName(String filePath){
+        File file = new File(filePath); //需要获取的文件的路径
+        return file.list(); //存储文件名的String数组
     }
-    public  static void getFiles2file(List<String> list, String path) {
-        File[] allFiles = new File(path).listFiles();
-        for (int i = 0; i < allFiles.length; i++) {
-            File file = allFiles[i];
-            if (file.isFile()) {
-                //System.out.println(file.toString());//--->/home/lmj/image_annotation_project/objectdetection/cfg/cfg2.txt
-                String[] split = file.toString().split("/");
-                list.add(split[split.length-1]);//--->cfg2.txt
-            } else  {
 
-            }
-        }
-    }
     /**
      * 获取某文件夹下的文件名和文件内容,存入map集合中
      * @param filePath 需要获取的文件的 路径
