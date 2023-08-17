@@ -7,7 +7,51 @@ import java.util.List;
  */
 public class AnnoSaveVo {
     private String fileName;
-    private String height;
-    private String width;
-    private List<AnnoVo> annoVoList;
+    private Integer width;
+    private Integer height;
+    private String currentTaskId;
+    private List<AnnoVo> regions;
+
+    public AnnoSaveVo() {
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public Integer getWidth() {
+        return width;
+    }
+
+    public void setWidth(Integer width) {
+        this.width = width;
+    }
+
+    public Integer getHeight() {
+        return height;
+    }
+
+    public void setHeight(Integer height) {
+        this.height = height;
+    }
+
+    public List<AnnoVo> getRegions() {
+        return regions;
+    }
+
+    public void setRegions(List<AnnoVo> regions) {
+        this.regions = regions;
+    }
+
+    public String getCurrentTaskId() {
+        return currentTaskId;
+    }
+
+    public void setCurrentTaskId(String currentTaskId) {
+        this.currentTaskId = currentTaskId;
+    }
 }

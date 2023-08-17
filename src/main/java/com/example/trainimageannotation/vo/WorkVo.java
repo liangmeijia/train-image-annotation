@@ -2,12 +2,14 @@ package com.example.trainimageannotation.vo;
 
 import com.example.trainimageannotation.po.Task;
 
+import java.util.List;
+
 /**
  * @author LENOVO
  */
 public class WorkVo {
     private Task task;
-    private String[] fileName;
+    private List<String> fileName;
 
     public WorkVo() {
     }
@@ -20,11 +22,11 @@ public class WorkVo {
         this.task = task;
     }
 
-    public String[] getFileName() {
+    public List<String> getFileName() {
         return fileName;
     }
 
-    public void setFileName(String[] fileName) {
+    public void setFileName(List<String> fileName) {
         this.fileName = fileName;
     }
 }

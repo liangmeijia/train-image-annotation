@@ -1,6 +1,10 @@
 package com.example.trainimageannotation.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.example.trainimageannotation.createXml.factory.OperationTagFactory;
+import com.example.trainimageannotation.createXml.goods.IOperationTag;
+import com.example.trainimageannotation.createXml.goods.PascalVoc;
+import com.example.trainimageannotation.po.Data;
 import com.example.trainimageannotation.po.Task;
 import com.example.trainimageannotation.service.IDataService;
 import com.example.trainimageannotation.service.ITaskService;
@@ -23,29 +27,41 @@ public class WorkController {
     private ITaskService taskService;
     @Resource
     private IDataService dataService;
-
+    @Resource
+    private OperationTagFactory operationTagFactory;
 
     @RequestMapping(value = "/work/manual_anno",method = RequestMethod.GET)
     @ResponseBody
     public WorkVo  manualAnno(Long taskId){
         Task task = new Task();
         task.setTaskStatus(Constant.TaskStatus.MANUAL_ANNOTATING.getCode());
-        task.setTaskId(Long.valueOf(taskId));
+        task.setTaskId(taskId);
         //1.修改任务状态为 【手工标注中】
         taskService.updateTaskStatus(task);
-        task = taskService.showTaskById(Long.valueOf(taskId));
+        task = taskService.showTaskById(taskId);
         //2.查询当前任务的数据列表
         String dataInPath = dataService.showDataById(task.getDataId()).getDataInPath();
-        String[] fileName = ReadFileUtil.getFileName(dataInPath);
+        List<String> fileName = ReadFileUtil.getFileName(dataInPath);
         System.out.println(fileName);
         //3.
-
         WorkVo workVo = new WorkVo();
         workVo.setTask(task);
         workVo.setFileName(fileName);
         return workVo;
     }
+    @RequestMapping(value = "/work/auto_anno",method = RequestMethod.POST)
+    @ResponseBody
+    public String  autoAnno(Long taskId){
+        Task task = new Task();
+        task.setTaskStatus(Constant.TaskStatus.AUTO_ANNOTATING.getCode());
+        task.setTaskId(taskId);
+        //1.修改任务状态为 【自动标注中】
+        taskService.updateTaskStatus(task);
+        task = taskService.showTaskById(taskId);
+        //2.
 
+        return "success";
+    }
     @RequestMapping(value = "/work/task_list",method = RequestMethod.GET)
     @ResponseBody
     public EasyResult dropDownVo2annoList(){
@@ -55,7 +71,7 @@ public class WorkController {
         taskStatusList.add(Constant.TaskStatus.MANUAL_ANNOTATED.getCode());
         taskStatusList.add(Constant.TaskStatus.AUTO_ANNOTATED.getCode());
         List<TaskVo> taskVoList = taskService.showTaskByStatus(taskStatusList);
-        //2.渲染前端下拉框
+        //2.渲染前端任务下拉框
         List<DropDownVo> dropDownVoList = new ArrayList<>(taskVoList.size());
         for (TaskVo taskVo:taskVoList) {
             DropDownVo dropDownVo= new DropDownVo();
@@ -72,11 +88,36 @@ public class WorkController {
         System.out.println(JSONObject.toJSONString(taskEasyResult));
         return taskEasyResult;
     }
+
     @RequestMapping(value = "/work/saveAnno",method = RequestMethod.POST)
     @ResponseBody
-    public String saveAnno(@RequestBody AnnoSaveVo request){
-        System.out.println(request);
+    public EasyResult saveAnno(@RequestBody AnnoSaveVo annoSaveVo){
+        Task task = taskService.showTaskById(Long.valueOf(annoSaveVo.getCurrentTaskId()));
+        Data data = dataService.showDataById(task.getDataId());
 
-        return "success";
+        IOperationTag operationTagService = operationTagFactory.getOperationTagService(data.getTagWay());
+        boolean res = operationTagService.saveTag(annoSaveVo, data.getDataInPath(), data.getDataOutPath());
+
+        EasyResult<Object> taskEasyResult = new EasyResult<>();
+        taskEasyResult.setCode(0);
+        if(res){
+            taskEasyResult.setMsg("success");
+        }else {
+            taskEasyResult.setMsg("false");
+        }
+        return taskEasyResult;
+
+    }
+    @RequestMapping(value = "/work/showAnno",method = RequestMethod.POST)
+    @ResponseBody
+    public List<AnnotationsW3c> test(String fileName,String currentTaskId){
+        Task task = taskService.showTaskById(Long.valueOf(currentTaskId));
+        Data data = dataService.showDataById(task.getDataId());
+
+        IOperationTag operationTagService = operationTagFactory.getOperationTagService(data.getTagWay());
+        List<AnnotationsW3c> annotationsW3c =  operationTagService.showXml(fileName,data.getDataOutPath());
+        String jsonString = JSONObject.toJSONString(annotationsW3c);
+        System.out.println(jsonString);
+        return annotationsW3c;
     }
 }

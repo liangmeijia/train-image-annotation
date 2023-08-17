@@ -88,6 +88,8 @@
         当前任务：<span class="layui-badge-rim" id ="current-task-name"></span>
         文件：<span class="layui-badge-rim" id ="current-file-name"></span>
         <span class="layui-badge-rim" id ="current-file-rate"></span>
+        <span class="layui-badge-rim" id ="current-task-id" style="display: none"></span>
+        <i class="layui-icon layui-icon-eye-invisible" id="show-anno"></i>
     </div>
 </div>
 
@@ -161,6 +163,7 @@
                                 // $("#current-task-name").attr("innerText","222");
                                 //1
                                 document.getElementById('current-task-name').innerHTML = data.task.taskName;
+                                document.getElementById('current-task-id').innerHTML = data.task.taskId;
                                 //2
                                 var currentTag = data.task.tag;
                                 tagItems = currentTag.split(",");
@@ -169,6 +172,7 @@
                                 $("#IMAGE").attr("src",fileItems[currentFile]);
                                 document.getElementById('current-file-name').innerHTML = fileItems[currentFile];
                                 document.getElementById('current-file-rate').innerHTML = (currentFile+1) +"/" + fileItems.length;
+
                             }
                         })
                     },
@@ -205,10 +209,13 @@
 
         var anno = Annotorious.init(config);
 
+
+
         anno.setAuthInfo({
             id: 'http://www.example.com/rainer',
             displayName: 'rainer'
         });
+
         // INIT TOOL PLUG
         Annotorious.SelectorPack(anno, {tools: ['line','point','rect', 'polygon']});
 
@@ -226,7 +233,7 @@
         });
         //
         $('#SAVE').on("click", function () {
-            var tagSave = [];
+
             var tagVal = [];
             const annotations = anno.getAnnotations();
             console.log(annotations)
@@ -234,16 +241,22 @@
                 var annotation = annotations[i];
                 var json={};
                 if(annotation.target.selector.type === "FragmentSelector"){
-                    json= {"tag":annotation.body[0].value,"location":annotation.target.selector.value.split(":")[1]};
+                    json= {"type":"rect","tag":annotation.body[0].value,"location":annotation.target.selector.value.split(":")[1]};
+                    var temp = annotation.target.renderedVia;
+                    if(temp!=null && temp.name === "point"){
+                        json.type = "point";
+                    }
                 }else if(annotation.target.selector.type ==="SvgSelector"){
-                    json = {"tag":annotation.body[0].value,"location":annotation.target.selector.value.split("\"")[1]};
+                    json = {"type":"polygon","tag":annotation.body[0].value,"location":annotation.target.selector.value.split("\"")[1]};
                 }
                 tagVal.push(json);
             }
-            tagSave.push(tagVal)
-            tagSave.push({"fileName":fileItems[currentFile]})
-            tagSave.push({"width":document.getElementById('IMAGE').naturalWidth})
-            tagSave.push({"height":document.getElementById('IMAGE').naturalHeight})
+            var tagSave = {"regions":tagVal,
+                "fileName":fileItems[currentFile],
+                "width":document.getElementById('IMAGE').naturalWidth,
+                "height":document.getElementById('IMAGE').naturalHeight,
+                "currentTaskId": document.getElementById('current-task-id').innerHTML};
+
             var jsonString = JSON.stringify(tagSave);
             console.log(jsonString);
             $.ajax({
@@ -253,17 +266,15 @@
                 data:jsonString,
                 type:"POST",
                 success:function (data) {
-                    // var jsonObj = JSON.parse(data);
-                    console.log("anno --------1111111111111");
                     console.log(data);
-                    // if(data.msg === "success"){
-                    //     // window.location.href = '/imageanno/anno?taskId='+taskId;
-                    // }
+                    if(data.msg === "success"){
+                        alert("保存成功！")
+                    }
                 },
-                // dataType : "html"
             });
 
         });
+
         $('#RECTANGLE').on("click", function () {
             anno.setDrawingTool('rect');
         });
@@ -273,7 +284,34 @@
         $('#POINT').on("click", function () {
             anno.setDrawingTool('point');
         });
-
+        $('#show-anno').on("click", function () {
+            var themeIcon = document.getElementById('show-anno');
+            if(themeIcon.classList.contains("layui-icon-eye")){
+                themeIcon.classList.add("layui-icon-eye-invisible");
+                themeIcon.classList.remove("layui-icon-eye");
+                //关闭
+                anno.clearAnnotations();
+            }
+            else{
+                themeIcon.classList.add("layui-icon-eye");
+                themeIcon.classList.remove("layui-icon-eye-invisible");
+                //开启
+                $.ajax({
+                    url:"/imageanno/work/showAnno",
+                    data:{
+                        "currentTaskId": document.getElementById('current-task-id').innerHTML,
+                        "fileName":fileItems[currentFile]
+                    },
+                    type:"POST",
+                    dataType : "json",
+                    success:function (data) {
+                        console.log(data);
+                        if(data != null)
+                        anno.setAnnotations(data);
+                    }
+                });
+            }
+        });
     });
 
 

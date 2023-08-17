@@ -152,8 +152,20 @@
             var taskId = data.taskId;
             // console.log(obj)
             if(obj.event === 'auto_anno'){
-                // window.location.href = '/imageanno/manualAnno?taskId='+taskId;
-                console.log("auto_anno")
+                $.ajax({
+                    url:"/imageanno/work/auto_anno",
+                    data:{taskId:taskId},
+                    type:"POST",
+                    success:function (data) {
+                        // var jsonObj = JSON.parse(data);
+                        console.log("anno --------1111111111111");
+                        console.log(data);
+                        // if(data.msg === "success"){
+                        //     // window.location.href = '/imageanno/anno?taskId='+taskId;
+                        // }
+                    },
+                    // dataType : "html"
+                });
             } else if(obj.event === 'more'){
                 console.log("more")
             }

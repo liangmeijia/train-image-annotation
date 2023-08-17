@@ -6,6 +6,7 @@ package com.example.trainimageannotation.vo;
 public class AnnoVo {
     private String tag;
     private String location;
+    private String type;
 
     public AnnoVo() {
     }
@@ -24,5 +25,13 @@ public class AnnoVo {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

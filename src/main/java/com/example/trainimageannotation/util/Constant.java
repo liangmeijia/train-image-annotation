@@ -35,7 +35,17 @@ public class Constant {
         }
 
     }
-
+    /**
+     * Ids 生成策略枚举
+     */
+    public enum Ids {
+        /** 雪花算法 */
+        SnowFlake,
+        /** 日期算法 */
+        ShortCode,
+        /** 随机算法 */
+        RandomNumeric;
+    }
     /**
      * 任务状态state有7种值，
      * 0是新建状态；1是手工标注中状态；2是手工标注完成状态；3是自动标注中状态；4是自动标注完成状态；5是人工校验中状态；6是人工校验完成状态。

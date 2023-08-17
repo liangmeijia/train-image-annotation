@@ -36,12 +36,19 @@ public class ReadFileUtil {
     }
 
     /**
-     * 获取filePath下的所有文件名
+     * 获取filePath下的所有文件名（只要图片）
      * @param filePath
      */
-    public static String[] getFileName(String filePath){
+    public static List<String> getFileName(String filePath){
         File file = new File(filePath); //需要获取的文件的路径
-        return file.list(); //存储文件名的String数组
+        String[] list = file.list();//存储文件名的String数组
+        List<String> res = new ArrayList<>();
+        for (int i = 0;i<list.length;i++){
+            if(list[i].endsWith(".png") ||list[i].endsWith(".jpg")|| list[i].endsWith(".jpeg")){
+                res.add(list[i]);
+            }
+        }
+        return res;
     }
 
     /**

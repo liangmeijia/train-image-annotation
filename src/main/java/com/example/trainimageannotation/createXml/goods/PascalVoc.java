@@ -1,22 +1,31 @@
-package com.example.trainimageannotation.util;
+package com.example.trainimageannotation.createXml.goods;
 
-import com.example.trainimageannotation.vo.AnnoSaveVo;
-import com.example.trainimageannotation.vo.AnnoVo;
+import com.example.trainimageannotation.util.Constant;
+import com.example.trainimageannotation.util.ids.IIdGenerator;
+import com.example.trainimageannotation.vo.*;
 import org.dom4j.*;
 import org.dom4j.io.OutputFormat;
+import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-public class Dom4jXml {
+/**
+ * @author LENOVO
+ */
+@Component
+public class PascalVoc implements IOperationTag{
+    @Resource
+    private Map<Constant.Ids, IIdGenerator> idGenerator;
 
-    /**
-     * 生成xml方法
-     */
-    public static String createXml(AnnoSaveVo annoSaveVo,String dataInPath,String dataOutPath){
+    @Override
+    public boolean saveTag(AnnoSaveVo annoSaveVo, String dataInPath, String dataOutPath) {
         //1.获取数据
         String fileName = annoSaveVo.getFileName();
         Integer imageWidth=annoSaveVo.getWidth();
@@ -31,13 +40,10 @@ public class Dom4jXml {
             //annotation.addAttribute("version", "2.0");
             // 4、生成子节点及子节点内容
             Element folder = annotation.addElement("folder");
-            folder.setText("test");
+            folder.setText(dataInPath);
 
             Element filename = annotation.addElement("filename");
             filename.setText(fileName);
-
-            Element filePath = annotation.addElement("path");
-            filePath.setText(dataInPath);
 
             Element source = annotation.addElement("source");
             Element database =source.addElement("database");
@@ -101,7 +107,9 @@ public class Dom4jXml {
             // 设置编码格式
             format.setEncoding("UTF-8");
             // 6、生成xml文件
-            File file = new File(dataOutPath);
+            String[] split = fileName.split("\\.");
+            String saveXml = dataOutPath+"\\"+split[0]+".xml";
+            File file = new File(saveXml);
             File fileParent = file.getParentFile();
             if(!fileParent.exists()){
                 fileParent.mkdirs();
@@ -112,68 +120,71 @@ public class Dom4jXml {
             //writer.setEscapeText(false);
             writer.write(document);
             writer.close();
-            System.out.println("生成"+dataOutPath+"成功");
-            return "true";
+            System.out.println("生成"+saveXml+"成功");
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("生成"+dataOutPath+"失败");
-            return "false";
+            return false;
         }
     }
 
-//    public  static SavedShapes readXmlByXpath(String _filePath) throws MalformedURLException, DocumentException {
-//        //1.处理要初始化加载到内存的xml文件路劲问题，根据相对路径_filePath求得绝对路径filePath
-//        String temp=_filePath.split("Annotations")[1];//--->/am/1.xml
-//        //String temp1=temp.substring(1);//---->am/1.xml
-//        String filePath=path2xml+temp;//--->/home/lmj/image_annotation/resources/Annotations/am/1.xml
-//        //2.读取filePath路径中的xml文件，并将其中的内容保存到对象savedShapes中
-//        SavedShapes savedShapes = new SavedShapes();
-//        savedShapes.setFilePath(_filePath);
-//        List<Rec> recList=new ArrayList<>();
-//        List<Poly> PolyList=new ArrayList<>();
-//        savedShapes.setRecList(recList);
-//        savedShapes.setPolyList(PolyList);
-//        //1.创建SAXReader实例
-//        SAXReader reader=new SAXReader();
-//        //2.read()方法读取指定的xml文档并生成dom树
-//        Document doc=reader.read(new File(filePath));
-//        //3.解析xml
-//        List<Node> objectsList = doc.selectNodes("//object");
-//        for(Node object:objectsList){
-//            Shape shape;
-//            String label = object.selectSingleNode("./name").getText();
-//            //String type = object.selectSingleNode("./type").getText();
-//            //if("rec".equals(type)){
-//            Node bndbox = object.selectSingleNode("./bndbox");
-//            if(bndbox!=null){
-//                shape = new Rec();
-//                String x_min = object.selectSingleNode("./bndbox/xmin").getText();
-//                String y_min = object.selectSingleNode("./bndbox/ymin").getText();
-//                String x_max = object.selectSingleNode("./bndbox/xmax").getText();
-//                String y_max = object.selectSingleNode("./bndbox/ymax").getText();
-//                shape.setLabel(label);
-//                shape.setType("rec");
-//                ((Rec) shape).setX_min(Double.valueOf(x_min));
-//                ((Rec) shape).setX_max(Double.valueOf(x_max));
-//                ((Rec) shape).setY_min(Double.valueOf(y_min));
-//                ((Rec) shape).setY_max(Double.valueOf(y_max));
-//                recList.add((Rec) shape);
-//            }
-//
-//            // }else if("point".equals(type)){
-////                shape=new Point();
-////                String x = object.selectSingleNode("./points/x").getText();
-////                String y = object.selectSingleNode("./points/y").getText();
-////                shape.setLabel(label);
-////                shape.setType(type);
-////                ((Point) shape).setX(Double.valueOf(x));
-////                ((Point) shape).setY(Double.valueOf(y));
-////                pointList.add((Point) shape);
-//            //}
-//
-//        }
-//        //3.返回
-//        return savedShapes;
-//    }
+    @Override
+    public List<AnnotationsW3c> showXml(String fileName, String dataOutPath) {
+        List<AnnotationsW3c> annotationsW3cList = new ArrayList<>();
+        String[] split = fileName.split("\\.");
+        String saveXml = dataOutPath+"\\"+split[0]+".xml";
 
+        //1.创建SAXReader实例
+        SAXReader reader=new SAXReader();
+        //2.read()方法读取指定的xml文档并生成dom树
+        Document doc= null;
+        try {
+            doc = reader.read(new File(saveXml));
+        } catch (Exception e) {
+            //e.printStackTrace();
+            return null;
+        }
+        //3.解析xml
+        List<Node> objectsList = doc.selectNodes("//object");
+        for(Node object:objectsList){
+            AnnotationsW3c annotationsW3c = new AnnotationsW3c();
+
+            String label = object.selectSingleNode("./name").getText();
+            annotationsW3c.setId(String.valueOf(idGenerator.get(Constant.Ids.SnowFlake).nextId()));
+            annotationsW3c.setType("Annotation");
+            annotationsW3c.setContext("http://www.w3.org/ns/anno.jsonld");
+            List<Body> bodyList = new ArrayList<>();
+            Body body = new Body();
+            body.setType("TextualBody");
+            body.setPurpose("tagging");
+            //设置标签
+            body.setValue(label);
+            bodyList.add(body);
+            annotationsW3c.setBody(bodyList);
+
+            Target target = new Target();
+            List<Selector> selectorList = new ArrayList<>();
+            Selector selector =  new Selector();
+            selector.setType("FragmentSelector");
+            selector.setConformsTo("http://www.w3.org/TR/media-frags/");
+            Node bndbox = object.selectSingleNode("./bndbox");
+            String val = "";
+            if(bndbox!=null){
+                String x_min = object.selectSingleNode("./bndbox/xmin").getText();
+                String y_min = object.selectSingleNode("./bndbox/ymin").getText();
+                String x_max = object.selectSingleNode("./bndbox/xmax").getText();
+                String y_max = object.selectSingleNode("./bndbox/ymax").getText();
+                val = "xywh=pixel:"+x_min+","+y_min+","+x_max+","+y_max;
+
+            }
+            selector.setValue(val);
+            selectorList.add(selector);
+            target.setSelector(selectorList);
+
+            annotationsW3c.setTarget(target);
+            annotationsW3cList.add(annotationsW3c);
+        }
+        //3.返回
+        return annotationsW3cList;
+    }
 }
