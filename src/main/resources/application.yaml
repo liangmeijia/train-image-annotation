@@ -28,3 +28,8 @@ mybatis:
   configuration:
     use-generated-keys: true
     map-underscore-to-camel-case: true
+#
+path:
+  remote:
+    in: "/root"
+    out: "/root/lmj/labels"

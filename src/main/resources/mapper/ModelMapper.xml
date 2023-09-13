@@ -7,19 +7,20 @@
         <result column="model_id" property="modelId"/>
         <result column="model_name" property="modelName"/>
         <result column="model_weights" property="modelWeights"/>
-        <result column="exif" property="exif"/>
+        <result column="cfg" property="cfg"/>
+        <result column="source" property="source"/>
         <result column="creator" property="creator"/>
         <result column="create_time" property="createTime"/>
         <result column="update_time" property="updateTime"/>
     </resultMap>
 
     <select id="selectModelById" resultMap="modelMap">
-        SELECT id, model_name, model_weights, exif, creator,create_time,update_time
+        SELECT id, model_name, model_weights, cfg,source, creator,create_time,update_time
         FROM model
         where model_id = #{modelId}
     </select>
     <select id="selectModelList" resultMap="modelMap">
-        SELECT id, model_id,model_name, model_weights, exif, creator,create_time,update_time
+        SELECT id, model_id,model_name, model_weights, cfg,source, creator,create_time,update_time
         FROM model
         order by create_time desc
         limit #{offset},#{limit}

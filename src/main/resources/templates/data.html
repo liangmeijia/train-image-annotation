@@ -101,12 +101,25 @@
                     [
                         {type: 'radio', title: '😊', fixed: true}, // 单选框
                         {field: 'id', title: 'ID', width: 40, sort: true, fixed: true},
-                        {field: 'dataName', title: '数据集名', width: 100},
+                        {field: 'dataName', title: '数据集名', width: 130},
                         {field: 'dataInPath', title: '导入路径'},
                         {field: 'dataOutPath', title: '导出路径'},
-                        {field: 'tagWay', title: '标注格式', width: 100},
-                        {field:'createTime', title: '创建时间',width: 100},
-                        {field:'updateTime', title: '更新时间',width: 100},
+                        {field: 'tagWay', title: '标注格式', width: 130,templet: function (d) {
+                                if(d.tagWay === 0){
+                                    return "PascalVOC"
+                                }
+                                if(d.tagWay === 1){
+                                    return "COCO"
+                                }
+                                if(d.tagWay === 2){
+                                    return "YOLO"
+                                }
+                                if(d.tagWay === 3){
+                                    return "DOTA"
+                                }
+                            }},
+                        {field:'createTime', title: '创建时间',width: 130},
+                        {field:'updateTime', title: '更新时间',width: 130},
                         {field:'creator', title: '创建人',width: 80},
                     ]
                 ],

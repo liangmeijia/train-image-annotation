@@ -22,7 +22,7 @@ public class ModelController {
 
     @RequestMapping(value = "/model/list",method = RequestMethod.GET)
     @ResponseBody
-    public EasyResult showTaskList(int page, int limit){
+    public EasyResult showModelList(int page, int limit){
         List<Model> modelList = modelService.showModelList(page-1,limit);
 
         EasyResult<Model> taskVoEasyResult = new EasyResult<>();

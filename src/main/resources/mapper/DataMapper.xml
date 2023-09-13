@@ -15,7 +15,7 @@
     </resultMap>
 
     <select id="selectDataById" resultMap="dataMap">
-        SELECT id, data_name, data_in_path, data_out_path, tag_way,creator,create_time,update_time
+        SELECT id, data_id,data_name, data_in_path, data_out_path, tag_way,creator,create_time,update_time
         FROM data
         where data_id = #{dataId}
     </select>

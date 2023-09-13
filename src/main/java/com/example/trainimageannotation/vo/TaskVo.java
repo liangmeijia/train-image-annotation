@@ -12,11 +12,11 @@ public class TaskVo {
     /**
      * 任务状态（0-新建状态，1-人工自动标注状态，2）
      */
-    private String taskStatus;
+    private int taskStatus;
     /**
      * 标注类型(0-图像分类,1-物体检测,2-图像分割)
      */
-    private String taskType;
+    private int taskType;
     /**
      * 数据集名
      */
@@ -28,7 +28,7 @@ public class TaskVo {
     /**
      * 标注方式（0-手工标注方式，1-智能标注方式）
      */
-    private String taskWay;
+    private int taskWay;
     /**
      * 标注模型名称
      */
@@ -64,19 +64,19 @@ public class TaskVo {
         this.taskName = taskName;
     }
 
-    public String getTaskStatus() {
+    public int getTaskStatus() {
         return taskStatus;
     }
 
-    public void setTaskStatus(String taskStatus) {
+    public void setTaskStatus(int taskStatus) {
         this.taskStatus = taskStatus;
     }
 
-    public String getTaskType() {
+    public int getTaskType() {
         return taskType;
     }
 
-    public void setTaskType(String taskType) {
+    public void setTaskType(int taskType) {
         this.taskType = taskType;
     }
 
@@ -96,11 +96,11 @@ public class TaskVo {
         this.tag = tag;
     }
 
-    public String getTaskWay() {
+    public int getTaskWay() {
         return taskWay;
     }
 
-    public void setTaskWay(String taskWay) {
+    public void setTaskWay(int taskWay) {
         this.taskWay = taskWay;
     }
 
@@ -146,7 +146,7 @@ public class TaskVo {
                 ", taskType=" + taskType +
                 ", dataName='" + dataName + '\'' +
                 ", tag='" + tag + '\'' +
-                ", taskWay='" + taskWay + '\'' +
+                ", taskWay=" + taskWay +
                 ", modelName='" + modelName + '\'' +
                 ", creator='" + creator + '\'' +
                 ", createTime=" + createTime +

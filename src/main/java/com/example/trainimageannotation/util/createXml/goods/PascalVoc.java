@@ -1,5 +1,6 @@
-package com.example.trainimageannotation.createXml.goods;
+package com.example.trainimageannotation.util.createXml.goods;
 
+import com.example.trainimageannotation.po.Data;
 import com.example.trainimageannotation.util.Constant;
 import com.example.trainimageannotation.util.ids.IIdGenerator;
 import com.example.trainimageannotation.vo.*;
@@ -20,16 +21,28 @@ import java.util.Map;
  * @author LENOVO
  */
 @Component
-public class PascalVoc implements IOperationTag{
+public class PascalVoc implements IoperationTag {
     @Resource
     private Map<Constant.Ids, IIdGenerator> idGenerator;
 
     @Override
-    public boolean saveTag(AnnoSaveVo annoSaveVo, String dataInPath, String dataOutPath) {
+    public boolean saveTag(AnnoSaveVo annoSaveVo, Data data) {
         //1.获取数据
+        String dataInPath = data.getDataInPath();
+        String dataOutPath = data.getDataOutPath();
         String fileName = annoSaveVo.getFileName();
         Integer imageWidth=annoSaveVo.getWidth();
         Integer imageHeight=annoSaveVo.getHeight();
+        String[] split = fileName.split("\\.");
+        String saveXml = dataOutPath+"\\"+split[0]+".xml";
+
+        //saveXml文件存在，则删除
+        File file = new File(saveXml);
+        if (file.exists() && file.isFile()) {
+            if (!file.delete()) {
+                return false;
+            }
+        }
         //2.具体保存
         try {
             // 1、创建document对象
@@ -54,11 +67,11 @@ public class PascalVoc implements IOperationTag{
             image.setText("Unknown");
 
             Element imageSize = annotation.addElement("size");
-            Element width = imageSize.addElement("width");
-            Element height = imageSize.addElement("height");
+            Element image_Width = imageSize.addElement("width");
+            Element image_Height = imageSize.addElement("height");
             Element depth = imageSize.addElement("depth");
-            width.setText(String.valueOf(imageWidth));
-            height.setText(String.valueOf(imageHeight));
+            image_Width.setText(String.valueOf(imageWidth));
+            image_Height.setText(String.valueOf(imageHeight));
             depth.setText("3");
 
             Element segmented = annotation.addElement("segmented");
@@ -89,15 +102,22 @@ public class PascalVoc implements IOperationTag{
                 String location = regions.get(size).getLocation();
                 if("rect".equals(regions.get(size).getType())){
                     String[] loc = location.split(",");
+                    Double xmin = Double.valueOf(loc[0]);
+                    Double ymin = Double.valueOf(loc[1]);
+                    Double width = Double.valueOf(loc[2]);
+                    Double height = Double.valueOf(loc[3]);
+                    Double xmax = xmin+width;
+                    Double ymax = ymin+height;
+
                     Element bndbox = object.addElement("bndbox");
-                    Element xmin=bndbox.addElement("xmin");
-                    xmin.setText(String.valueOf(loc[0]));
-                    Element ymin=bndbox.addElement("ymin");
-                    ymin.setText(String.valueOf(loc[1]));
-                    Element xmax=bndbox.addElement("xmax");
-                    xmax.setText(String.valueOf(loc[2]));
-                    Element ymax=bndbox.addElement("ymax");
-                    ymax.setText(String.valueOf(loc[3]));
+                    Element x_min=bndbox.addElement("xmin");
+                    x_min.setText(xmin.toString());
+                    Element y_min=bndbox.addElement("ymin");
+                    y_min.setText(ymin.toString());
+                    Element x_max=bndbox.addElement("xmax");
+                    x_max.setText(xmax.toString());
+                    Element y_max=bndbox.addElement("ymax");
+                    y_max.setText(ymax.toString());
                 }
                 size--;
             }
@@ -107,13 +127,10 @@ public class PascalVoc implements IOperationTag{
             // 设置编码格式
             format.setEncoding("UTF-8");
             // 6、生成xml文件
-            String[] split = fileName.split("\\.");
-            String saveXml = dataOutPath+"\\"+split[0]+".xml";
-            File file = new File(saveXml);
-            File fileParent = file.getParentFile();
-            if(!fileParent.exists()){
-                fileParent.mkdirs();
-            }
+//            File fileParent = file.getParentFile();
+//            if(!fileParent.exists()){
+//                fileParent.mkdirs();
+//            }
             file.createNewFile();
             XMLWriter writer = new XMLWriter(new FileOutputStream(file), format);
             // 设置是否转义，默认使用转义字符
@@ -129,7 +146,9 @@ public class PascalVoc implements IOperationTag{
     }
 
     @Override
-    public List<AnnotationsW3c> showXml(String fileName, String dataOutPath) {
+    public List<AnnotationsW3c> showXml(String fileName,Data data ) {
+        String dataOutPath = data.getDataOutPath();
+
         List<AnnotationsW3c> annotationsW3cList = new ArrayList<>();
         String[] split = fileName.split("\\.");
         String saveXml = dataOutPath+"\\"+split[0]+".xml";
@@ -174,7 +193,9 @@ public class PascalVoc implements IOperationTag{
                 String y_min = object.selectSingleNode("./bndbox/ymin").getText();
                 String x_max = object.selectSingleNode("./bndbox/xmax").getText();
                 String y_max = object.selectSingleNode("./bndbox/ymax").getText();
-                val = "xywh=pixel:"+x_min+","+y_min+","+x_max+","+y_max;
+                Double width = Double.parseDouble(x_max) - Double.parseDouble(x_min);
+                Double height =  Double.parseDouble(y_max) - Double.parseDouble(y_min);
+                val = "xywh=pixel:"+x_min+","+y_min+","+width+","+height;
 
             }
             selector.setValue(val);

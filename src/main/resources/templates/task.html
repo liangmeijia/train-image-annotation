@@ -103,17 +103,27 @@
     <div class="layui-clear-space">
         <a class="layui-btn layui-btn-xs layui-bg-red" lay-event="auto_anno">智能标注</a>
         <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+        <a class="layui-btn layui-btn-xs" lay-event="down_anno">下载</a>
         <a class="layui-btn layui-btn-xs" lay-event="more">
             更多
             <i class="layui-icon layui-icon-down"></i>
+
         </a>
     </div>
 </script>
 <script>
+    // 使用while循环
+    function sleep(delay) {
+        var start = new Date().getTime();
+        while (new Date().getTime() - start < delay) {
+            continue;
+        }
+    }
     layui.use('table',function(){
         var table = layui.table;
         var form = layui.form;
         var util = layui.util;
+        var layer = layui.layer;
 
         // 创建表格实例
         table.render({
@@ -125,13 +135,64 @@
                         {type: 'radio', title: '😊', fixed: true}, // 单选框
                         {field:'id', title: 'ID', width:40, sort: true, fixed: true},
                         {field:'taskId', title: 'taskId', hide:true},
-                        {field:'taskName', title: '任务名', width:120},
-                        {field:'taskStatus', title: '状态', width:120},
-                        {field:'taskType', title: '标注类型', width:100},
+                        {field:'taskName', title: '任务名', width:130},
+                        {field:'taskStatus', title: '状态', width:160, templet: function (d) {
+                            if(d.taskStatus === 0){
+                                var html = '<div style="background-color: #eeeeee;padding-top:10px "> <div style="margin:0 5px; background-color: #e2e2e2 !important;" class="layui-progress " lay-showPercent="true" >';
+                                html += '<div class="layui-progress-bar layui-bg-gray " style="width: 0%" lay-percent="' + (0).toFixed(2) + '%"></div>';
+                                html += '</div><div style="line-height: 20px;font-size:12px">' + '新建' + '</div></div>'
+                                return html;
+                            }if(d.taskStatus === 1){
+                                    var html = '<div style="background-color: #eeeeee;padding-top:10px "> <div style="margin:0 5px; background-color: #e2e2e2 !important;" class="layui-progress " lay-showPercent="true" >';
+                                    html += '<div class="layui-progress-bar layui-bg-orange "  style="width: 50%"></div>';
+                                    html += '</div><div style="line-height: 20px;font-size:12px">' + '手工标注中' + '</div></div>'
+                                    return html;
+                            }if(d.taskStatus === 2){
+                                    var html = '<div style="background-color: #eeeeee;padding-top:10px "> <div style="margin:0 5px; background-color: #e2e2e2 !important;" class="layui-progress " lay-filter="taskStatus-filter-progress" lay-showPercent="true" >';
+                                    html += '<div class="layui-progress-bar layui-bg-orange " style="width: 100%" lay-percent="' + (1) + '%"></div>';
+                                    html += '</div><div style="line-height: 20px;font-size:12px">' + '手工标注完成' + '</div></div>'
+                                    return html;
+                            }if(d.taskStatus === 3){
+                                    var html = '<div style="background-color: #eeeeee;padding-top:10px "> <div style="margin:0 5px; background-color: #e2e2e2 !important;" class="layui-progress " lay-showPercent="true" >';
+                                    html += '<div class="layui-progress-bar layui-bg-red " style="width: 50%" lay-percent="' + (49/100).toFixed(2) + '%"></div>';
+                                    html += '</div><div style="line-height: 20px;font-size:12px">' + '自动标注中' + '</div></div>'
+                                    return html;
+                            }if(d.taskStatus === 4){
+                                    var html = '<div style="background-color: #eeeeee;padding-top:10px "> <div style="margin:0 5px; background-color: #e2e2e2 !important;" class="layui-progress " lay-showPercent="true" >';
+                                    html += '<div class="layui-progress-bar layui-bg-red " style="width: 100%" lay-percent="' + (100/100).toFixed(2) + '%"></div>';
+                                    html += '</div><div style="line-height: 20px;font-size:12px">' + '自动标注完成' +'</div></div>'
+                                    return html;
+                            }if(d.taskStatus === 5){
+                                    var html = '<div style="background-color: #eeeeee;padding-top:10px "> <div style="margin:0 5px; background-color: #e2e2e2 !important;" class="layui-progress " lay-showPercent="true" >';
+                                    html += '<div class="layui-progress-bar layui-bg-green " style="width: 50%" lay-percent="' + (49/100).toFixed(2) + '%"></div>';
+                                    html += '</div><div style="line-height: 20px;font-size:12px">' + '人工校验中'  + '</div></div>'
+                                    return html;
+                            }if(d.taskStatus === 6){
+                                    var html = '<div style="background-color: #eeeeee;padding-top:10px "> <div style="margin:0 5px; background-color: #e2e2e2 !important;" class="layui-progress " lay-showPercent="true" >';
+                                    html += '<div class="layui-progress-bar layui-bg-green " lay-percent="' + (100/100).toFixed(2) + '%"></div>';
+                                    html += '</div><div style="line-height: 20px;font-size:12px">' + '人工校验完成' + '</div></div>'
+                                    return html;
+                            }else {return "";}
+                            }},
+                        {field:'taskType', title: '标注类型', width:130,templet:function (d) {
+                                if(d.taskType === 0){
+                                    return "图像分类";
+                                }if(d.taskType === 1){
+                                    return "物体检测";
+                                }if(d.taskType === 2){
+                                    return "图像分割";
+                                }
+                            }},
                         {field:'dataName', title: '数据集名', width:130},
-                        {field:'tag', title: '标签集',width: 120},
-                        {field:'taskWay', title: '标注方式', width:100},
-                        {field:'modelName', title: '标注模型', width:120},
+                        {field:'tag', title: '标签集',width: 130},
+                        {field:'taskWay', title: '标注方式', width:130,templet:function (d) {
+                                if(d.taskWay === 0){
+                                    return "手工标注方式";
+                                }if(d.taskWay === 1){
+                                    return "智能标注方式";
+                                }
+                            }},
+                        {field:'modelName', title: '标注模型', width:130},
                         {fixed: '', title:'操作', toolbar: '#barDemo'},
                         {field:'createTime', title: '创建时间',width: 100, sort: true},
                         {field:'updateTime', title: '更新时间',width: 100, sort: true},
@@ -147,27 +208,55 @@
         });
 
         // 触发单元格工具事件
-        table.on('tool(ID-table-demo-search)', function(obj){ // 双击 toolDouble
+        table.on('tool(ID-table-demo-search)', function(obj){
             var data = obj.data; // 获得当前行数据
             var taskId = data.taskId;
             // console.log(obj)
             if(obj.event === 'auto_anno'){
                 $.ajax({
-                    url:"/imageanno/work/auto_anno",
-                    data:{taskId:taskId},
+                    url:"/imageanno/task/updateStatus",
+                    data:{taskId:taskId,status:data.taskStatus+1},
                     type:"POST",
                     success:function (data) {
-                        // var jsonObj = JSON.parse(data);
-                        console.log("anno --------1111111111111");
-                        console.log(data);
-                        // if(data.msg === "success"){
-                        //     // window.location.href = '/imageanno/anno?taskId='+taskId;
-                        // }
+                        if(data === "success"){
+                            //刷新表格
+                            table.reloadData('ID-table-demo-search', {
+                                url: '/imageanno/task/list',
+                                where: {key: ''}
+                            });
+                            //开始自动标注
+                            $.ajax({
+                                url:"/imageanno/work/auto_anno",
+                                data:{taskId:taskId},
+                                type:"POST",
+                                success:function (data) {
+                                    // var jsonObj = JSON.parse(data);
+                                    console.log(data);
+                                    //刷新表格
+                                    table.reloadData('ID-table-demo-search', {
+                                        url: '/imageanno/task/list',
+                                        where: {key: ''}
+                                    });
+                                    // if(data.msg === "success"){
+                                    //     // window.location.href = '/imageanno/anno?taskId='+taskId;
+                                    // }
+                                },
+                            });
+                        }
                     },
-                    // dataType : "html"
                 });
             } else if(obj.event === 'more'){
                 console.log("more")
+            } else if(obj.event === 'down_anno'){
+                //1.获取本地下载地址
+                layer.prompt({title: '请输入本地下载地址'}, function(value, index, elem){
+                    if(value === '') return elem.focus();
+                    const escape = util.escape(value);
+                    layer.msg('获得：'+ escape); // 显示 value
+                    // 关闭 prompt
+                    layer.close(index);
+                });
+
             }
         });
 

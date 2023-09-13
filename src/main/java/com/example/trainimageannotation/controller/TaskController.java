@@ -26,13 +26,13 @@ public class TaskController {
     @RequestMapping(value = "/task/list",method = RequestMethod.GET)
     @ResponseBody
     public EasyResult showTaskList(int page, int limit){
-        List<TaskVo> taskVoList = taskService.showTaskVoList(page-1,limit);
+        List<TaskVo> taskList = taskService.showTaskList(page-1,limit);
 
         EasyResult<TaskVo> taskVoEasyResult = new EasyResult<>();
         taskVoEasyResult.setCode(0);
         taskVoEasyResult.setMsg("");
         taskVoEasyResult.setCount(taskService.getTaskCounts());
-        taskVoEasyResult.setData(taskVoList);
+        taskVoEasyResult.setData(taskList);
 
         System.out.println(JSONObject.toJSONString(taskVoEasyResult));
         return taskVoEasyResult;
@@ -43,5 +43,20 @@ public class TaskController {
         Task task = taskService.showTaskById(taskId);
         System.out.println(JSONObject.toJSONString(task));
         return task;
+    }
+    @RequestMapping(value = "/task/updateStatus",method = RequestMethod.POST)
+    @ResponseBody
+    public String updateStatus(Long taskId,Integer status){
+        Task task = new Task();
+        task.setTaskStatus(status);
+        task.setTaskId(taskId);
+        //1.修改任务状态
+        int i = taskService.updateTaskStatus(task);
+        if(i==1){
+            return "success";
+        }else {
+            return "fail";
+        }
+
     }
 }

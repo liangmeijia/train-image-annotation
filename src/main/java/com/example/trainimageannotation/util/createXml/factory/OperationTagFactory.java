@@ -1,6 +1,6 @@
-package com.example.trainimageannotation.createXml.factory;
+package com.example.trainimageannotation.util.createXml.factory;
 
-import com.example.trainimageannotation.createXml.goods.IOperationTag;
+import com.example.trainimageannotation.util.createXml.goods.IoperationTag;
 import org.springframework.stereotype.Service;
 
 /**
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class OperationTagFactory extends GoodsConfig {
 
-    public IOperationTag getOperationTagService(Integer TagWay){
+    public IoperationTag getOperationTagService(Integer TagWay){
         return operationTagMap.get(TagWay);
     }
 

@@ -15,6 +15,7 @@ public class Data {
      * 标注文件格式（0-PascalVOC,1-COCO,2-YOLO,3-DOTA）
      */
     private int tagWay;
+
     private String creator;
     private Date createTime;
     private Date updateTime;

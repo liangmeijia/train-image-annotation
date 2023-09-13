@@ -18,9 +18,9 @@ public class TaskServiceTest {
 
     @Test
     public void TaskTest(){
-        List<TaskVo> taskVoListList = taskService.showTaskVoList(0,10);
-        for (TaskVo taskVo :taskVoListList){
-            System.out.println(taskVo);
+        List<TaskVo> taskListList = taskService.showTaskList(0,10);
+        for (TaskVo task :taskListList){
+            System.out.println(task);
         }
 
     }

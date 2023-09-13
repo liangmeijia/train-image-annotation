@@ -14,9 +14,13 @@ public class Model {
      */
     private String modelWeights;
     /**
-     * 扩展信息
+     * 模型推理文件位置
      */
-    private String exif;
+    private String cfg;
+    /**
+     * 来源
+     */
+    private String source;
     private String creator;
     private Date createTime;
     private Date updateTime;
@@ -58,12 +62,20 @@ public class Model {
         this.modelWeights = modelWeights;
     }
 
-    public String getExif() {
-        return exif;
+    public String getCfg() {
+        return cfg;
     }
 
-    public void setExif(String exif) {
-        this.exif = exif;
+    public void setCfg(String cfg) {
+        this.cfg = cfg;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
     }
 
     public String getCreator() {
@@ -97,7 +109,7 @@ public class Model {
                 ", modelId=" + modelId +
                 ", modelName='" + modelName + '\'' +
                 ", modelWeights='" + modelWeights + '\'' +
-                ", exif='" + exif + '\'' +
+                ", source='" + source + '\'' +
                 ", creator='" + creator + '\'' +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +

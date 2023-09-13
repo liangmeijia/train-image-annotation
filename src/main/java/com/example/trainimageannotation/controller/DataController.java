@@ -1,8 +1,8 @@
 package com.example.trainimageannotation.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.example.trainimageannotation.po.Data;
 import com.example.trainimageannotation.service.IDataService;
-import com.example.trainimageannotation.vo.DataVo;
 import com.example.trainimageannotation.vo.EasyResult;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,9 +23,9 @@ public class DataController {
     @RequestMapping(value = "/data/list",method = RequestMethod.GET)
     @ResponseBody
     public EasyResult showDataList(int page, int limit){
-        List<DataVo> dataList = dataService.showDataList(page - 1, limit);
+        List<Data> dataList = dataService.showDataList(page - 1, limit);
 
-        EasyResult<DataVo> taskVoEasyResult = new EasyResult<>();
+        EasyResult<Data> taskVoEasyResult = new EasyResult<>();
         taskVoEasyResult.setCode(0);
         taskVoEasyResult.setMsg("");
         taskVoEasyResult.setCount(dataService.getDataCount());
