@@ -9,15 +9,7 @@ import com.example.trainimageannotation.util.ReadFileUtil;
 import com.example.trainimageannotation.util.WriteFileUtil;
 import com.example.trainimageannotation.util.ids.IIdGenerator;
 import com.example.trainimageannotation.vo.*;
-import org.dom4j.Document;
-import org.dom4j.DocumentHelper;
-import org.dom4j.Element;
-import org.dom4j.Node;
-import org.dom4j.io.OutputFormat;
-import org.dom4j.io.SAXReader;
-import org.dom4j.io.XMLWriter;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.imageio.ImageIO;
@@ -207,11 +199,11 @@ public class YOLO implements IoperationTag{
 
     /**
      * yolo坐标格式转正常显示格式
-     * @param norm_x
-     * @param norm_y
-     * @param norm_w
-     * @param norm_h
-     * @return
+     * @param norm_x 图元中心点的x坐标/图片的宽度
+     * @param norm_y 图元中心点的y坐标/图片的高度
+     * @param norm_w 图元宽度/图片宽度
+     * @param norm_h 图元高度/图片高度
+     * @return xywh
      */
     private String[] yolo2xywh(String imageWidth,String imageHeight,String norm_x,String norm_y,String norm_w,String norm_h){
         String[] arr = new String[4];
