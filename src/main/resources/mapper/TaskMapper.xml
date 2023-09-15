@@ -21,7 +21,6 @@
     <select id="selectTaskList" resultMap="taskMap">
         SELECT id, task_id, task_name, task_status, task_type, data_id,tag,task_way,model_id,creator,create_time,update_time
         FROM task
-        order by create_time Desc
         limit #{offset},#{limit}
     </select>
     <select id="selectTaskById" parameterType="java.lang.Long" resultMap="taskMap">

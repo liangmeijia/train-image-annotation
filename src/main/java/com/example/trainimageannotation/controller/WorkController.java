@@ -1,5 +1,6 @@
 package com.example.trainimageannotation.controller;
 
+import cn.hutool.json.JSONUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.example.trainimageannotation.service.IModelService;
 import com.example.trainimageannotation.util.createXml.factory.OperationTagFactory;
@@ -34,7 +35,7 @@ public class WorkController {
 
     @RequestMapping(value = "/work/manual_anno",method = RequestMethod.GET)
     @ResponseBody
-    public WorkVo  manualAnno(Long taskId){
+    public Result  manualAnno(Long taskId){
         Task task = new Task();
         task.setTaskStatus(Constant.TaskStatus.MANUAL_ANNOTATING.getCode());
         task.setTaskId(taskId);
@@ -46,32 +47,29 @@ public class WorkController {
         List<String> fileName = ReadFileUtil.getFileName(dataInPath);
         System.out.println(fileName);
         //3.
-        WorkVo workVo = new WorkVo();
-        workVo.setTask(task);
-        workVo.setFileName(fileName);
-        return workVo;
+        String taskJson = JSONUtil.toJsonStr(task);
+        String fileNameJson = JSONUtil.toJsonStr(fileName);
+        String info = "{\"task\":"+taskJson+",\"fileName\":"+fileNameJson+"}";
+        Result result = new Result(Constant.ResponseCode.SUCCESS.getCode(), info);
+        System.out.println(info);
+
+        return result;
     }
     @RequestMapping(value = "/work/auto_anno",method = RequestMethod.POST)
     @ResponseBody
-    public String  autoAnno (Long taskId){
+    public Result  autoAnno (Long taskId){
         Task task = taskService.showTaskById(taskId);
         //2.自动标注开始
-        boolean res = modelService.start(task.getModelId(), task.getDataId());
+        Result result = modelService.start(task.getModelId(), task.getDataId());
         //3.修改任务状态为 【自动标注完成】
         task.setTaskStatus(Constant.TaskStatus.AUTO_ANNOTATED.getCode());
         taskService.updateTaskStatus(task);
-
-        if(res){
-            return "success";
-        }else {
-            return "fail";
-        }
-
+        return result;
     }
 
     @RequestMapping(value = "/work/task_list",method = RequestMethod.GET)
     @ResponseBody
-    public EasyResult dropDownVo2annoList(){
+    public Result dropDownVo2annoList(){
         //1.标注人员只显示【新建，自动标注完成，手工标注完成】状态的任务
         ArrayList<Integer> taskStatusList = new ArrayList<>(3);
         taskStatusList.add(Constant.TaskStatus.NEW_BUILD.getCode());
@@ -79,41 +77,36 @@ public class WorkController {
         taskStatusList.add(Constant.TaskStatus.AUTO_ANNOTATED.getCode());
         List<TaskVo> taskList = taskService.showTaskByStatus(taskStatusList);
         //2.渲染前端任务下拉框
-        List<DropDownVo> dropDownVoList = new ArrayList<>(taskList.size());
-        for (TaskVo taskVo:taskList) {
-            DropDownVo dropDownVo= new DropDownVo();
-            dropDownVo.setTitle(taskVo.getTaskName()+"（状态："+Constant.TaskStatus.getInfoByCode(taskVo.getTaskStatus())+"）");
-            dropDownVo.setId(taskVo.getTaskId());
-            dropDownVoList.add(dropDownVo);
-        }
-        EasyResult<DropDownVo> taskEasyResult = new EasyResult<>();
-        taskEasyResult.setCode(0);
-        taskEasyResult.setMsg("");
-        taskEasyResult.setCount(Long.valueOf(taskList.size()));
-        taskEasyResult.setData(dropDownVoList);
+        String info = "";
+        for (int i =0;i<taskList.size();i++) {
+            TaskVo taskVo = taskList.get(i);
+            info += "{\"id\":"+taskVo.getTaskId()+",\"title\":\""+taskVo.getTaskName()+"（状态："+Constant.TaskStatus.getInfoByCode(taskVo.getTaskStatus())+"）\""+"}";
+            if(i<taskList.size()-1){
+                info+=",";
+            }
 
-        System.out.println(JSONObject.toJSONString(taskEasyResult));
-        return taskEasyResult;
+        }
+        Result result = new Result(Constant.ResponseCode.SUCCESS.getCode(), "["+info+"]");
+        return result;
     }
 
     @RequestMapping(value = "/work/saveAnno",method = RequestMethod.POST)
     @ResponseBody
-    public EasyResult saveAnno(@RequestBody AnnoSaveVo annoSaveVo){
+    public Result saveAnno(@RequestBody AnnoSaveVo annoSaveVo){
         Task task = taskService.showTaskById(Long.valueOf(annoSaveVo.getCurrentTaskId()));
         Data data = dataService.showDataById(task.getDataId());
         //保存标注
         IoperationTag operationTagService = operationTagFactory.getOperationTagService(data.getTagWay());
         boolean res = operationTagService.saveTag(annoSaveVo, data);
-
-        EasyResult<Object> taskEasyResult = new EasyResult<>();
-        taskEasyResult.setCode(0);
+       Result result = new Result();
         if(res){
-            taskEasyResult.setMsg("success");
-
+            result.setCode(Constant.ResponseCode.SUCCESS.getCode());
+            result.setInfo("保存成功");
         }else {
-            taskEasyResult.setMsg("false");
+            result.setCode(Constant.ResponseCode.UN_ERROR.getCode());
+            result.setInfo("保存失败");
         }
-        return taskEasyResult;
+        return result;
 
     }
     @RequestMapping(value = "/work/showAnno",method = RequestMethod.POST)
@@ -123,7 +116,7 @@ public class WorkController {
         Data data = dataService.showDataById(task.getDataId());
         //显示标注
         IoperationTag operationTagService = operationTagFactory.getOperationTagService(data.getTagWay());
-        List<AnnotationsW3c> annotationsW3c =  operationTagService.showXml(fileName,data);
+        List<AnnotationsW3c> annotationsW3c =  operationTagService.showXml(fileName,task,data);
         String jsonString = JSONObject.toJSONString(annotationsW3c);
         System.out.println(jsonString);
         return annotationsW3c;

@@ -3,7 +3,7 @@ package com.example.trainimageannotation.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.example.trainimageannotation.po.Data;
 import com.example.trainimageannotation.service.IDataService;
-import com.example.trainimageannotation.vo.EasyResult;
+import com.example.trainimageannotation.vo.TableResult;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -22,17 +22,17 @@ public class DataController {
 
     @RequestMapping(value = "/data/list",method = RequestMethod.GET)
     @ResponseBody
-    public EasyResult showDataList(int page, int limit){
+    public TableResult showDataList(int page, int limit){
         List<Data> dataList = dataService.showDataList(page - 1, limit);
 
-        EasyResult<Data> taskVoEasyResult = new EasyResult<>();
-        taskVoEasyResult.setCode(0);
-        taskVoEasyResult.setMsg("");
-        taskVoEasyResult.setCount(dataService.getDataCount());
-        taskVoEasyResult.setData(dataList);
+        TableResult<Data> taskVoTableResult = new TableResult<>();
+        taskVoTableResult.setCode(0);
+        taskVoTableResult.setMsg("");
+        taskVoTableResult.setCount(dataService.getDataCount());
+        taskVoTableResult.setData(dataList);
 
         System.out.println(JSONObject.toJSONString(dataList));
-        return taskVoEasyResult;
+        return taskVoTableResult;
     }
 
 }

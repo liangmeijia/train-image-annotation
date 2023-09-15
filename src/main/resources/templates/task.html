@@ -112,13 +112,6 @@
     </div>
 </script>
 <script>
-    // 使用while循环
-    function sleep(delay) {
-        var start = new Date().getTime();
-        while (new Date().getTime() - start < delay) {
-            continue;
-        }
-    }
     layui.use('table',function(){
         var table = layui.table;
         var form = layui.form;
@@ -174,7 +167,7 @@
                                     return html;
                             }else {return "";}
                             }},
-                        {field:'taskType', title: '标注类型', width:130,templet:function (d) {
+                        {field:'taskType', title: '标注类型', width:130 ,templet:function (d) {
                                 if(d.taskType === 0){
                                     return "图像分类";
                                 }if(d.taskType === 1){
@@ -187,13 +180,13 @@
                         {field:'tag', title: '标签集',width: 130},
                         {field:'taskWay', title: '标注方式', width:130,templet:function (d) {
                                 if(d.taskWay === 0){
-                                    return "手工标注方式";
+                                    return "手工标注";
                                 }if(d.taskWay === 1){
-                                    return "智能标注方式";
+                                    return "智能标注";
                                 }
                             }},
                         {field:'modelName', title: '标注模型', width:130},
-                        {fixed: '', title:'操作', toolbar: '#barDemo'},
+                        {fixed:'', title:'操作', toolbar: '#barDemo'},
                         {field:'createTime', title: '创建时间',width: 100, sort: true},
                         {field:'updateTime', title: '更新时间',width: 100, sort: true},
                         {field:'creator', title: '创建人',width: 80},
@@ -232,6 +225,7 @@
                                 success:function (data) {
                                     // var jsonObj = JSON.parse(data);
                                     console.log(data);
+                                    alert(data.info);
                                     //刷新表格
                                     table.reloadData('ID-table-demo-search', {
                                         url: '/imageanno/task/list',

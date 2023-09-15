@@ -1,6 +1,7 @@
 package com.example.trainimageannotation.util.createXml.goods;
 
 import com.example.trainimageannotation.po.Data;
+import com.example.trainimageannotation.po.Task;
 import com.example.trainimageannotation.util.Constant;
 import com.example.trainimageannotation.util.ids.IIdGenerator;
 import com.example.trainimageannotation.vo.*;
@@ -26,7 +27,7 @@ public class PascalVoc implements IoperationTag {
     private Map<Constant.Ids, IIdGenerator> idGenerator;
 
     @Override
-    public boolean saveTag(AnnoSaveVo annoSaveVo, Data data) {
+    public boolean saveTag(AnnoSaveVo annoSaveVo,Data data) {
         //1.获取数据
         String dataInPath = data.getDataInPath();
         String dataOutPath = data.getDataOutPath();
@@ -37,12 +38,12 @@ public class PascalVoc implements IoperationTag {
         String saveXml = dataOutPath+"\\"+split[0]+".xml";
 
         //saveXml文件存在，则删除
-        File file = new File(saveXml);
-        if (file.exists() && file.isFile()) {
-            if (!file.delete()) {
-                return false;
-            }
-        }
+//        File file = new File(saveXml);
+//        if (file.exists() && file.isFile()) {
+//            if (!file.delete()) {
+//                return false;
+//            }
+//        }
         //2.具体保存
         try {
             // 1、创建document对象
@@ -127,10 +128,11 @@ public class PascalVoc implements IoperationTag {
             // 设置编码格式
             format.setEncoding("UTF-8");
             // 6、生成xml文件
-//            File fileParent = file.getParentFile();
-//            if(!fileParent.exists()){
-//                fileParent.mkdirs();
-//            }
+            File file = new File(saveXml);
+            File fileParent = file.getParentFile();
+            if(!fileParent.exists()){
+                fileParent.mkdirs();
+            }
             file.createNewFile();
             XMLWriter writer = new XMLWriter(new FileOutputStream(file), format);
             // 设置是否转义，默认使用转义字符
@@ -146,7 +148,7 @@ public class PascalVoc implements IoperationTag {
     }
 
     @Override
-    public List<AnnotationsW3c> showXml(String fileName,Data data ) {
+    public List<AnnotationsW3c> showXml(String fileName, Task task,Data data ) {
         String dataOutPath = data.getDataOutPath();
 
         List<AnnotationsW3c> annotationsW3cList = new ArrayList<>();

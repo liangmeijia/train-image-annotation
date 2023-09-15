@@ -4,7 +4,7 @@ package com.example.trainimageannotation.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.example.trainimageannotation.po.Task;
 import com.example.trainimageannotation.service.ITaskService;
-import com.example.trainimageannotation.vo.EasyResult;
+import com.example.trainimageannotation.vo.TableResult;
 import com.example.trainimageannotation.vo.TaskVo;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,17 +25,17 @@ public class TaskController {
 
     @RequestMapping(value = "/task/list",method = RequestMethod.GET)
     @ResponseBody
-    public EasyResult showTaskList(int page, int limit){
+    public TableResult showTaskList(int page, int limit){
         List<TaskVo> taskList = taskService.showTaskList(page-1,limit);
 
-        EasyResult<TaskVo> taskVoEasyResult = new EasyResult<>();
-        taskVoEasyResult.setCode(0);
-        taskVoEasyResult.setMsg("");
-        taskVoEasyResult.setCount(taskService.getTaskCounts());
-        taskVoEasyResult.setData(taskList);
+        TableResult<TaskVo> taskVoTableResult = new TableResult<>();
+        taskVoTableResult.setCode(0);
+        taskVoTableResult.setMsg("");
+        taskVoTableResult.setCount(taskService.getTaskCounts());
+        taskVoTableResult.setData(taskList);
 
-        System.out.println(JSONObject.toJSONString(taskVoEasyResult));
-        return taskVoEasyResult;
+        System.out.println(JSONObject.toJSONString(taskVoTableResult));
+        return taskVoTableResult;
     }
     @RequestMapping(value = "/task/one",method = RequestMethod.GET)
     @ResponseBody

@@ -48,7 +48,6 @@ public class RemoteDetector {
      * @throws Exception
      */
         public static boolean exec(String shell,String ip, int port,String user,String password) throws Exception {
-        //Map<String,Object> map=new HashMap<>();
         boolean ret = false;
         StringBuilder sb = new StringBuilder();
         try {
@@ -67,9 +66,7 @@ public class RemoteDetector {
                     sb.append(line+"\n");
                 }
                 System.out.println(sb.toString());
-                //map.put("result",sb.toString());
                 ret = session.getExitStatus()==0;
-               // map.put("num",ret);
             } else {
                 throw new Exception("登录远程机器失败" + ip); // 自定义异常类 实现略
             }
@@ -81,33 +78,4 @@ public class RemoteDetector {
 
         return ret;
     }
-
-//    public  String exec1(String shell) throws Exception {
-//        StringBuilder sb = new StringBuilder();
-//        try {
-//            if (login()) {
-//                Session session = conn.openSession();
-//                session.execCommand(shell);
-//                session.waitForCondition(ChannelCondition.EXIT_STATUS, TIME_OUT);
-//                InputStream stdout = session.getStdout();
-//                BufferedReader br = new BufferedReader(new InputStreamReader(stdout));
-//                while (true)
-//                {
-//                    String line = br.readLine();
-//                    if (line == null)
-//                        break;
-//                    sb.append(line+"  ");
-//                }
-//            } else {
-//                throw new Exception("登录远程机器失败" + ip); // 自定义异常类 实现略
-//            }
-//        } finally {
-//            if (conn != null) {
-//                conn.close();
-//            }
-//        }
-//
-//        return sb.toString();
-//    }
-
 }

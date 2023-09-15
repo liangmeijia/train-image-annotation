@@ -3,16 +3,16 @@ package com.example.trainimageannotation.vo;
 import java.util.List;
 
 /**
- * @deacriptation 前端界面统一返回数据
+ * @deacriptation 前端界面【表格】统一返回数据
  * @author LENOVO
  */
-public class EasyResult<T> {
+public class TableResult<T> {
     private int code;
     private String msg;
     private Long count;
     private List<T> data;
 
-    public EasyResult() {
+    public TableResult() {
     }
 
     public int getCode() {

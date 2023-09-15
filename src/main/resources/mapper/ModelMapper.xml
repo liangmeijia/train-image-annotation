@@ -22,7 +22,6 @@
     <select id="selectModelList" resultMap="modelMap">
         SELECT id, model_id,model_name, model_weights, cfg,source, creator,create_time,update_time
         FROM model
-        order by create_time desc
         limit #{offset},#{limit}
     </select>
     <select id="selectModelCount" resultType="java.lang.Long">

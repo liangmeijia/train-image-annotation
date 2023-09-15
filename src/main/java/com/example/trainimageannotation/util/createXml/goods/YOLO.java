@@ -49,13 +49,8 @@ public class YOLO implements IoperationTag{
         String saveTxt = dataOutPath+"\\"+fileNameArr[0]+".txt";
         String currentTaskId = annoSaveVo.getCurrentTaskId();
         Task task = taskService.showTaskById(Long.valueOf(currentTaskId));
-
-        String tag = task.getTag();
-        String[] tagArr = tag.split("\\,");
-        Map<String,Integer> tagMap = new HashMap<>(tagArr.length);
-        for (int i=0;i<tagArr.length;i++){
-            tagMap.put(tagArr[i],i);
-        }
+        //tag
+        Map<String, Integer> tagMap = getTagMap2save(task);
         //saveTxt文件存在，则删除
         File file = new File(saveTxt);
         if (file.exists() && file.isFile()) {
@@ -85,13 +80,15 @@ public class YOLO implements IoperationTag{
     }
 
     @Override
-    public List<AnnotationsW3c> showXml(String fileName,Data data) {
+    public List<AnnotationsW3c> showXml(String fileName, Task task,Data data) {
         String dataInPath = data.getDataInPath();
         String dataOutPath = data.getDataOutPath();
 
         List<AnnotationsW3c> annotationsW3cList = new ArrayList<>();
         String[] split = fileName.split("\\.");
         String saveXml = dataOutPath+"\\"+split[0]+".txt";
+        //tag
+        Map<Integer,String> tagMap = getTagMap2show(task);
 
         try {
             String readFile = ReadFileUtil.readFile(new File(saveXml));
@@ -103,7 +100,7 @@ public class YOLO implements IoperationTag{
             for(String object:objectsList){
                 AnnotationsW3c annotationsW3c = new AnnotationsW3c();
                 String[] anno = object.split(" ");
-                String label = anno[0];
+                String label = tagMap.get(Integer.valueOf(anno[0]));
 
                 annotationsW3c.setId(String.valueOf(idGenerator.get(Constant.Ids.SnowFlake).nextId()));
                 annotationsW3c.setType("Annotation");
@@ -148,6 +145,36 @@ public class YOLO implements IoperationTag{
 
         //3.返回
         return annotationsW3cList;
+    }
+
+    /**
+     * 标签保存对应关系
+     * @param task 任务
+     * @return
+     */
+    public Map<String,Integer> getTagMap2save(Task task){
+        String tag = task.getTag();
+        String[] tagArr = tag.split("\\,");
+        Map<String,Integer> tagMap = new HashMap<>(tagArr.length);
+        for (int i=0;i<tagArr.length;i++){
+            tagMap.put(tagArr[i],i);
+        }
+        return  tagMap;
+    }
+
+    /**
+     * 标签显示对应关系
+     * @param task 任务
+     * @return
+     */
+    public Map<Integer,String> getTagMap2show(Task task){
+        String tag = task.getTag();
+        String[] tagArr = tag.split("\\,");
+        Map<Integer,String> tagMap = new HashMap<>(tagArr.length);
+        for (int i=0;i<tagArr.length;i++){
+            tagMap.put(i,tagArr[i]);
+        }
+        return  tagMap;
     }
 
     /**

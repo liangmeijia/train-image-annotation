@@ -7,12 +7,14 @@ import com.example.trainimageannotation.po.Data;
 import com.example.trainimageannotation.po.Model;
 import com.example.trainimageannotation.service.IModelService;
 import com.example.trainimageannotation.util.CmdExecution;
+import com.example.trainimageannotation.util.Constant;
 import com.example.trainimageannotation.util.DownloadUtil;
 import com.example.trainimageannotation.util.createXml.factory.OperationTagFactory;
 import com.example.trainimageannotation.util.createXml.goods.IoperationTag;
 import com.example.trainimageannotation.util.modelDetector.LocalDetector;
 import com.example.trainimageannotation.util.modelDetector.RemoteDetector;
 import com.example.trainimageannotation.vo.AnnoSaveVo;
+import com.example.trainimageannotation.vo.Result;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -48,10 +50,10 @@ public class ModelService implements IModelService {
     }
 
     @Override
-    public boolean start (Long modelId, Long dataId) {
+    public Result start (Long modelId, Long dataId) {
         Model model = modelDao.selectModelById(modelId);
         Data data = dataDao.selectDataById(dataId);
-
+        Result result = new Result();
         /**
          * 模型权重文件路径
          */
@@ -68,7 +70,7 @@ public class ModelService implements IModelService {
         String dataOutPath = data.getDataOutPath();
         if(modelSource==null){
             try {
-                //1.执行
+                //1.执行推理
                 List<String> detect = LocalDetector.detect(detectPath, "");
 
                 //2.生成标注文件
@@ -76,6 +78,9 @@ public class ModelService implements IModelService {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+
+            result.setCode(Constant.ResponseCode.UN_ERROR.getCode());
+            result.setInfo("智能标注失败");
 
         }else{
             Map parse = (Map)JSONObject.parse(modelSource);
@@ -87,36 +92,37 @@ public class ModelService implements IModelService {
             /**
              * 模型推理的shell命令
              */
-            String[] split = dataInPath.split("\\\\");
-            String shell ="python3.8  "+detectPath+" --weights "+modelWeights+" --source "+re_dataInPath+"/"+split[split.length-1]+ " --project "+re_dataOutPath+" --save-txt";
-            System.out.println(shell);
-
+            String uploadCmd = "scp -rP "+port+" "+dataInPath+" "+user+"@"+host+":"+re_dataInPath;
+            String[] dataInPathArr = dataInPath.split("\\\\");
+            String start ="python3.8  "+detectPath+" --weights "+modelWeights+" --source "+re_dataInPath+"/"+dataInPathArr[dataInPathArr.length-1]+ " --project "+re_dataOutPath+" --save-txt";
+            String downCmd = "scp -rP "+port+" "+user+"@"+host+":"+re_dataOutPath+" "+dataOutPath;
+            System.out.println(start);
+            System.out.println(uploadCmd);
+            System.out.println(downCmd);
             try {
                 //上传图片
-                String uploadCmd = "scp -rP "+port+" "+dataInPath+" "+user+"@"+host+":"+re_dataInPath;
-                System.out.println(uploadCmd);
-                String s = CmdExecution.exec1(uploadCmd);
-                System.out.println(s);
+                String up = CmdExecution.exec1(uploadCmd);
+                System.out.println(up);
                 //【远程】执行推理
-                boolean exec = RemoteDetector.exec(shell, host, Integer.valueOf(port), user, password);
+                boolean exec = RemoteDetector.exec(start, host, Integer.parseInt(port), user, password);
                 if(exec){
                     //执行shell成功
-                    System.out.println(exec);
-                    //2.下载检测结果到本地
-                    String downCmd = "scp -rP "+port+" "+user+"@"+host+":"+re_dataOutPath+" "+dataOutPath;
-                    System.out.println(downCmd);
-                    String s1 = CmdExecution.exec1(downCmd);
-                    System.out.println(s1);
-                    return true;
+                    //下载检测结果到本地
+                    String down = CmdExecution.exec1(downCmd);
+                    System.out.println(down);
+                    //保存结果
+                    result.setCode(Constant.ResponseCode.SUCCESS.getCode());
+                    result.setInfo("智能标注成功");
+                }else {
+                    result.setCode(Constant.ResponseCode.UN_ERROR.getCode());
+                    result.setInfo("智能标注失败");
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+                result.setCode(Constant.ResponseCode.UN_ERROR.getCode());
+                result.setInfo("智能标注失败");
             }
-
-
         }
-        return false;
+        return result;
     }
-
-
 }

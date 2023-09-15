@@ -1,6 +1,7 @@
 package com.example.trainimageannotation.util.createXml.goods;
 
 import com.example.trainimageannotation.po.Data;
+import com.example.trainimageannotation.po.Task;
 import com.example.trainimageannotation.vo.AnnoSaveVo;
 import com.example.trainimageannotation.vo.AnnotationsW3c;
 
@@ -22,8 +23,9 @@ public interface IoperationTag {
     /**
      * 展示标注文件
      * @param fileName 文件名
+     * @param task 任务
      * @param data 数据集
      * @return
      */
-     List<AnnotationsW3c> showXml(String fileName,Data data);
+     List<AnnotationsW3c> showXml(String fileName, Task task, Data data);
 }

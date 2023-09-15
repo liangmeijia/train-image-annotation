@@ -22,7 +22,6 @@
     <select id="selectDataList" resultMap="dataMap">
         SELECT id, data_id,data_name, data_in_path, data_out_path, tag_way,creator,create_time,update_time
         FROM data
-        order by create_time desc
         limit #{offset},#{limit}
     </select>
     <select id="selectDataCount" resultType="java.lang.Long">

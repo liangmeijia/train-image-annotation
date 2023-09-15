@@ -1,6 +1,7 @@
 package com.example.trainimageannotation.service;
 
 import com.example.trainimageannotation.po.Model;
+import com.example.trainimageannotation.vo.Result;
 
 import java.util.List;
 
@@ -28,6 +29,6 @@ public interface IModelService {
      * @param modelId 模型id
      * @param dataId 数据集id
      */
-    boolean start(Long modelId, Long dataId);
+    Result start(Long modelId, Long dataId);
 
 }

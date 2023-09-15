@@ -3,6 +3,7 @@ package com.example.trainimageannotation.vo;
 import java.util.List;
 
 /**
+ * @description 标注显示的信息
  * @author LENOVO
  */
 public class AnnotationsW3c {

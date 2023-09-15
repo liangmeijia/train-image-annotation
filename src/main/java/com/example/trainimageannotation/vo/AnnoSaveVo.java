@@ -3,6 +3,7 @@ package com.example.trainimageannotation.vo;
 import java.util.List;
 
 /**
+ * @description 标注保存的信息
  * @author LENOVO
  */
 public class AnnoSaveVo {
