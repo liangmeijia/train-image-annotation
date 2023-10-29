@@ -19,28 +19,34 @@
 <body>
 <div class="layui-layout layui-layout-admin">
     <div class="layui-header">
-        <div class="layui-logo layui-hide-xs layui-bg-black">Image Anno</div>
+        <div class="layui-logo layui-hide-xs layui-bg-black">图像自动标注系统</div>
         <!-- 头部区域（可配合layui 已有的水平导航） -->
         <ul class="layui-nav layui-layout-left">
             <!-- 移动端显示 -->
             <li class="layui-nav-item layui-show-xs-inline-block layui-hide-sm" lay-header-event="menuLeft">
                 <i class="layui-icon layui-icon-spread-left"></i>
             </li>
-            <li class="layui-nav-item layui-hide-xs"><a href="javascript:;" id="todata">数据集</a></li>
+            <li class="layui-nav-item layui-hide-xs"><a href="javascript:;" id="todata">数据</a></li>
             <li class="layui-nav-item layui-hide-xs"><a class="" href="javascript:;" id="tomodel">模型</a></li>
             <li class="layui-nav-item layui-hide-xs"><a class="" href="javascript:;" id="totask">任务</a></li>
-            <li class="layui-nav-item"><a href="javascript:;" id="towork">工作台</a></li>
+            <li class="layui-nav-item"><a href="javascript:;" id="towork">标注</a></li>
+            <li class="layui-nav-item"><a href="javascript:;" id="tocheck">校验</a></li>
+            <li class="layui-nav-item"><a href="javascript:;">系统管理</a>
+                <dl class="layui-nav-child">
+                    <dd><a href="javascript:;" id="touser">用户管理</a></dd>
+                    <dd><a href="javascript:;" id="tolog">登录日志</a></dd>
+                </dl>
+            </li>
         </ul>
         <ul class="layui-nav layui-layout-right">
             <li class="layui-nav-item layui-hide layui-show-sm-inline-block">
                 <a href="javascript:;">
                     <img src="//unpkg.com/outeres@0.0.10/img/layui/icon-v2.png" class="layui-nav-img">
-                    tester
+                    Admin
                 </a>
                 <dl class="layui-nav-child">
-                    <dd><a href="javascript:;">Your Profile</a></dd>
-                    <dd><a href="javascript:;">Settings</a></dd>
-                    <dd><a href="javascript:;">Sign out</a></dd>
+                    <dd><a href="javascript:;">个人主页</a></dd>
+                    <dd><a href="javascript:;">退出</a></dd>
                 </dl>
             </li>
             <li class="layui-nav-item" lay-header-event="menuRight" lay-unselect>
@@ -71,7 +77,22 @@
         <div style="padding: 15px;">
             <div class="layui-card layui-panel">
                 <div class="layui-card-header">
-                    <button type="button" class="layui-btn layui-btn-primary layui-bg-red" lay-on="create-model"><span class="layui-badge-dot"></span>创建模型</button>
+                    <form class="layui-form layui-row layui-col-space16">
+                        <div class="layui-col-md4">
+                            <div class="layui-input-wrap">
+                                <div class="layui-input-prefix">
+                                    <i class="layui-icon layui-icon-username"></i>
+                                </div>
+                                <input type="text" name="A" value="" placeholder="请输入名称查询" class="layui-input" lay-affix="clear">
+                            </div>
+                        </div>
+                        <div class="layui-col-md4">
+                            <div class="layui-input-wrap">
+                                <button class="layui-btn" lay-submit lay-filter="demo-table-search">查询</button>
+                                <button type="button" class="layui-btn layui-btn-primary layui-bg-red" lay-on="create-model"><span class="layui-badge-dot"></span>创建模型</button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
                 <div class="layui-card-body">
                     <table class="layui-hide" id="ID-table-show-model"></table>
@@ -82,9 +103,20 @@
     </div>
     <div class="layui-footer">
         <!-- 底部固定区域 -->
-        底部固定区域
+        图像标注软件v1
     </div>
 </div>
+<script type="text/html" id="barDemo">
+    <div class="layui-clear-space">
+        <a class="layui-btn layui-btn-xs" lay-event="edit">修改</a>
+        <a class="layui-btn layui-btn-xs" lay-event="del">删除</a>
+        <!--        <a class="layui-btn layui-btn-xs" lay-event="more">-->
+        <!--            更多-->
+        <!--            <i class="layui-icon layui-icon-down"></i>-->
+
+        <!--        </a>-->
+    </div>
+</script>
 <script>
     layui.use(function() {
         var table = layui.table;
@@ -98,16 +130,16 @@
             cols:
                 [
                     [
-                        {type: 'radio', title: '😊', fixed: true}, // 单选框
-                        {field: 'id', title: 'ID', width: 40, sort: true, fixed: true},
-                        {field:'modelId', title: '模型id', hide:true},
-                        {field: 'modelName', title: '模型名', width: 100},
+                        {type: 'radio', title: '😊', fixed: true}, // 单选框  hide:true
+                        {field:'modelId', title: '模型id',hide:true},
+                        {field: 'modelName', title: '模型名', width: 150},
                         {field: 'modelWeights', title: '模型权重文件'},
                         {field: 'cfg', title: '模型推理文件'},
                         {field: 'source', title: '来源'},
-                        {field:'createTime', title: '创建时间',width: 100},
-                        {field:'updateTime', title: '更新时间',width: 100},
+                        {field:'createTime', title: '创建时间',width: 200,templet: "<div>{{layui.util.toDateString(d.createTime, 'yyyy-MM-dd HH:mm:ss')}}</div>"},
+                        {field:'updateTime', title: '更新时间',width: 200,templet: "<div>{{layui.util.toDateString(d.updateTime, 'yyyy-MM-dd HH:mm:ss')}}</div>"},
                         {field:'creator', title: '创建人',width: 80},
+                        {fixed:'', title:'操作', toolbar: '#barDemo'},
                     ]
                 ],
             limits: [10, 20, 50, 100],
@@ -174,6 +206,15 @@
     });
     $('#towork').on("click", function () {
         window.location.href = '/imageanno/work';
+    });
+    $('#tocheck').on("click", function () {
+        window.location.href = '/imageanno/check';
+    });
+    $('#touser').on("click", function () {
+        window.location.href = '/imageanno/user';
+    });
+    $('#tolog').on("click", function () {
+        window.location.href = '/imageanno/log';
     });
 </script>
 

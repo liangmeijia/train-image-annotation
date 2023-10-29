@@ -3,7 +3,6 @@
 <mapper namespace="com.example.trainimageannotation.dao.ModelDao">
 
     <resultMap id="modelMap" type="com.example.trainimageannotation.po.Model">
-        <id column="id" property="id"/>
         <result column="model_id" property="modelId"/>
         <result column="model_name" property="modelName"/>
         <result column="model_weights" property="modelWeights"/>
@@ -15,16 +14,16 @@
     </resultMap>
 
     <select id="selectModelById" resultMap="modelMap">
-        SELECT id, model_name, model_weights, cfg,source, creator,create_time,update_time
+        SELECT model_name, model_weights, cfg,source, creator,create_time,update_time
         FROM model
         where model_id = #{modelId}
     </select>
     <select id="selectModelList" resultMap="modelMap">
-        SELECT id, model_id,model_name, model_weights, cfg,source, creator,create_time,update_time
+        SELECT model_id,model_name, model_weights, cfg,source, creator,create_time,update_time
         FROM model
         limit #{offset},#{limit}
     </select>
     <select id="selectModelCount" resultType="java.lang.Long">
-        SELECT COUNT(id) FROM model
+        SELECT COUNT(model_id) FROM model
     </select>
 </mapper>

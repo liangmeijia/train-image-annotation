@@ -37,13 +37,6 @@ public class PascalVoc implements IoperationTag {
         String[] split = fileName.split("\\.");
         String saveXml = dataOutPath+"\\"+split[0]+".xml";
 
-        //saveXml文件存在，则删除
-//        File file = new File(saveXml);
-//        if (file.exists() && file.isFile()) {
-//            if (!file.delete()) {
-//                return false;
-//            }
-//        }
         //2.具体保存
         try {
             // 1、创建document对象
@@ -148,7 +141,7 @@ public class PascalVoc implements IoperationTag {
     }
 
     @Override
-    public List<AnnotationsW3c> showXml(String fileName, Task task,Data data ) {
+    public List<AnnotationsW3c> showXml(String fileName, Data data ) {
         String dataOutPath = data.getDataOutPath();
 
         List<AnnotationsW3c> annotationsW3cList = new ArrayList<>();

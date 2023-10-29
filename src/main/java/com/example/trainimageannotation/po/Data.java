@@ -6,7 +6,6 @@ import java.util.Date;
  * @author LENOVO
  */
 public class Data {
-    private Long id;
     private Long dataId;
     private String dataName;
     private String dataInPath;
@@ -15,22 +14,15 @@ public class Data {
      * 标注文件格式（0-PascalVOC,1-COCO,2-YOLO,3-DOTA）
      */
     private int tagWay;
-
+    /**
+     * 标签集
+     */
+    private String tag;
     private String creator;
     private Date createTime;
     private Date updateTime;
 
     public Data() {
-    }
-
-
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public Long getDataId() {
@@ -72,7 +64,13 @@ public class Data {
     public void setTagWay(int tagWay) {
         this.tagWay = tagWay;
     }
+    public String getTag() {
+        return tag;
+    }
 
+    public void setTag(String tag) {
+        this.tag = tag;
+    }
     public String getCreator() {
         return creator;
     }
@@ -100,12 +98,12 @@ public class Data {
     @Override
     public String toString() {
         return "Data{" +
-                "id=" + id +
                 ", dataId=" + dataId +
                 ", dataName='" + dataName + '\'' +
                 ", dataInPath='" + dataInPath + '\'' +
                 ", dataOutPath='" + dataOutPath + '\'' +
                 ", tagWay=" + tagWay +
+                ", tag='" + tag + '\'' +
                 ", creator='" + creator + '\'' +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +

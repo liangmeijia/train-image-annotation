@@ -46,10 +46,11 @@ public class WorkController {
         String dataInPath = dataService.showDataById(task.getDataId()).getDataInPath();
         List<String> fileName = ReadFileUtil.getFileName(dataInPath);
         System.out.println(fileName);
-        //3.
+        //3.查询tag数据
+        Data data = dataService.showDataById(task.getDataId());
         String taskJson = JSONUtil.toJsonStr(task);
         String fileNameJson = JSONUtil.toJsonStr(fileName);
-        String info = "{\"task\":"+taskJson+",\"fileName\":"+fileNameJson+"}";
+        String info = "{\"task\":"+taskJson+",\"fileName\":"+fileNameJson+",\"tag\":\""+data.getTag()+"\"}";
         Result result = new Result(Constant.ResponseCode.SUCCESS.getCode(), info);
         System.out.println(info);
 
@@ -59,6 +60,9 @@ public class WorkController {
     @ResponseBody
     public Result  autoAnno (Long taskId){
         Task task = taskService.showTaskById(taskId);
+        //1.修改任务状态为 【自动标注中】
+        task.setTaskStatus(Constant.TaskStatus.AUTO_ANNOTATING.getCode());
+        taskService.updateTaskStatus(task);
         //2.自动标注开始
         Result result = modelService.start(task.getModelId(), task.getDataId());
         //3.修改任务状态为 【自动标注完成】
@@ -116,7 +120,7 @@ public class WorkController {
         Data data = dataService.showDataById(task.getDataId());
         //显示标注
         IoperationTag operationTagService = operationTagFactory.getOperationTagService(data.getTagWay());
-        List<AnnotationsW3c> annotationsW3c =  operationTagService.showXml(fileName,task,data);
+        List<AnnotationsW3c> annotationsW3c =  operationTagService.showXml(fileName,data);
         String jsonString = JSONObject.toJSONString(annotationsW3c);
         System.out.println(jsonString);
         return annotationsW3c;

@@ -23,9 +23,8 @@ public interface IoperationTag {
     /**
      * 展示标注文件
      * @param fileName 文件名
-     * @param task 任务
      * @param data 数据集
      * @return
      */
-     List<AnnotationsW3c> showXml(String fileName, Task task, Data data);
+     List<AnnotationsW3c> showXml(String fileName, Data data);
 }

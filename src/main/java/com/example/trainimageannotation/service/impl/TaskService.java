@@ -33,7 +33,6 @@ public class TaskService implements ITaskService {
             Model model = modelDao.selectModelById(task.getModelId());
 
             TaskVo taskVo = new TaskVo();
-            taskVo.setId(task.getId());
             taskVo.setTaskId(task.getTaskId());
             taskVo.setTaskName(task.getTaskName());
             taskVo.setTaskStatus(task.getTaskStatus());
@@ -42,7 +41,7 @@ public class TaskService implements ITaskService {
             taskVo.setCreator(task.getCreator());
             taskVo.setCreateTime(task.getCreateTime());
             taskVo.setUpdateTime(task.getUpdateTime());
-            taskVo.setTag(task.getTag());
+
 
             taskVo.setModelName(model == null?"":model.getModelName());
             taskVo.setDataName(data.getDataName());

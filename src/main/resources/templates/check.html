@@ -30,7 +30,7 @@
             <li class="layui-nav-item layui-hide-xs"><a class="" href="javascript:;" id="totask">任务</a></li>
             <li class="layui-nav-item"><a href="javascript:;" id="towork">标注</a></li>
             <li class="layui-nav-item"><a href="javascript:;" id="tocheck">校验</a></li>
-            <li class="layui-nav-item"><a href="javascript:;">系统管理</a>
+            <li class="layui-nav-item"><a href="javascript:;" >系统管理</a>
                 <dl class="layui-nav-child">
                     <dd><a href="javascript:;" id="touser">用户管理</a></dd>
                     <dd><a href="javascript:;" id="tolog">登录日志</a></dd>
@@ -75,10 +75,9 @@
         <div style="padding: 15px;">
             <blockquote class="layui-elem-quote layui-text">
                 <button class="layui-btn demo-dropdown-base">
-                    <span>选择标注任务</span>
+                    <span>选择校验任务</span>
                     <i class="layui-icon layui-icon-down layui-font-12"></i>
                 </button>
-                <button type="button" class="layui-btn layui-btn-primary layui-bg-red" lay-on="create-data" id="auto_anno"><span class="layui-badge-dot"></span>任务自动标注</button>
             </blockquote>
             <div class="layui-card layui-panel">
 <!--                <div class="layui-card-header">-->
@@ -97,7 +96,6 @@
         <span class="layui-badge-rim" id ="current-file-rate"></span>
         <span class="layui-badge-rim" id ="current-task-id" style="display: none"></span>
         <i class="layui-icon layui-icon-eye-invisible" id="show-anno"></i>
-        <button type="button" class="layui-btn layui-btn-xs">自动标注</button>
     </div>
 </div>
 
@@ -111,7 +109,6 @@
         var fileItems = [];
         var currentFile = 0;
         var regions = [];
-        var current_taskId = -1;
         //头部事件
         util.event('lay-header-event', {
             menuLeft: function(othis){ // 左侧菜单事件
@@ -162,11 +159,11 @@
                     elem: '.demo-dropdown-base',
                     data: info,
                     click: function(obj){
-                        current_taskId = obj.id;
-                        //选中后，
+                      var taskId = obj.id;
+                      //选中后，
                         $.ajax({
                             url: "/imageanno/work/manual_anno",
-                            data: {"taskId":current_taskId},
+                            data: {"taskId":taskId},
                             type:"get",
                             success: function (data) {
                                 console.log(data);//下面会提到这个data是什么值
@@ -191,7 +188,6 @@
                 });
             }
         })
-
         $('#layui-icon-next').on("click", function () {
             currentFile++;
             if(currentFile >= fileItems.length)currentFile = fileItems.length-1;
@@ -206,32 +202,6 @@
             document.getElementById('current-file-name').innerHTML = fileItems[currentFile];
             document.getElementById('current-file-rate').innerHTML = (currentFile+1) +"/" + fileItems.length;
         });
-        $('#auto_anno').on("click",function () {
-            if(current_taskId === -1){
-                alert("请先选择标注任务");
-                return;
-            }
-            var taskId = current_taskId;
-            //开始自动标注
-            $.ajax({
-                url:"/imageanno/work/auto_anno",
-                data:{taskId:taskId},
-                type:"POST",
-                success:function (data) {
-                    // var jsonObj = JSON.parse(data);
-                    console.log(data);
-                    alert(data.info);
-                    //刷新表格
-                    // table.reloadData('ID-table-demo-search', {
-                    //     url: '/imageanno/task/list',
-                    //     where: {key: ''}
-                    // });
-                    // if(data.msg === "success"){
-                    //     // window.location.href = '/imageanno/anno?taskId='+taskId;
-                    // }
-                },
-            });
-        })
 
         var config = {
             image: document.getElementById('IMAGE'),
@@ -370,8 +340,8 @@
     $('#tomodel').on("click", function () {
         window.location.href = '/imageanno/model';
     });
-    $('#tocheck').on("click", function () {
-        window.location.href = '/imageanno/check';
+    $('#towork').on("click", function () {
+        window.location.href = '/imageanno/work';
     });
     $('#touser').on("click", function () {
         window.location.href = '/imageanno/user';
@@ -379,6 +349,7 @@
     $('#tolog').on("click", function () {
         window.location.href = '/imageanno/log';
     });
+
 </script>
 
 </body>

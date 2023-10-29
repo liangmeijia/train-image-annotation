@@ -8,21 +8,22 @@ import java.util.Date;
  * @date 20230814
  */
 public class User {
-    private Long id;
+    private Long userId;
     private String userName;
     private String password;
     private int userType;
     private Date createTime;
+    private Date updateTime;
 
     public User() {
     }
 
     public Long getId() {
-        return id;
+        return userId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setId(Long userId) {
+        this.userId = userId;
     }
 
     public String getUserName() {
@@ -57,14 +58,23 @@ public class User {
         this.createTime = createTime;
     }
 
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         return "User{" +
-                "id=" + id +
+                "userId=" + userId +
                 ", userName='" + userName + '\'' +
                 ", password='" + password + '\'' +
                 ", userType=" + userType +
                 ", createTime=" + createTime +
+                ", updateTime=" + updateTime +
                 '}';
     }
 }

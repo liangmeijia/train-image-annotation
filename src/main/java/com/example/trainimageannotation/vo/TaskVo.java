@@ -6,7 +6,6 @@ import java.util.Date;
  * @author LENOVO
  */
 public class TaskVo {
-    private Long id;
     private Long taskId;
     private String taskName;
     /**
@@ -22,10 +21,6 @@ public class TaskVo {
      */
     private String dataName;
     /**
-     * 标签集
-     */
-    private String tag;
-    /**
      * 标注方式（0-手工标注方式，1-智能标注方式）
      */
     private int taskWay;
@@ -40,13 +35,6 @@ public class TaskVo {
     public TaskVo() {
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public Long getTaskId() {
         return taskId;
@@ -86,14 +74,6 @@ public class TaskVo {
 
     public void setDataName(String dataName) {
         this.dataName = dataName;
-    }
-
-    public String getTag() {
-        return tag;
-    }
-
-    public void setTag(String tag) {
-        this.tag = tag;
     }
 
     public int getTaskWay() {
@@ -139,13 +119,11 @@ public class TaskVo {
     @Override
     public String toString() {
         return "TaskVo{" +
-                "id=" + id +
                 ", taskId=" + taskId +
                 ", taskName='" + taskName + '\'' +
                 ", taskStatus=" + taskStatus +
                 ", taskType=" + taskType +
                 ", dataName='" + dataName + '\'' +
-                ", tag='" + tag + '\'' +
                 ", taskWay=" + taskWay +
                 ", modelName='" + modelName + '\'' +
                 ", creator='" + creator + '\'' +

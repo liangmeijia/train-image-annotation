@@ -6,7 +6,6 @@ import java.util.Date;
  * @author LENOVO
  */
 public class Model {
-    private Long id;
     private Long modelId;
     private String modelName;
     /**
@@ -26,16 +25,6 @@ public class Model {
     private Date updateTime;
 
     public Model() {
-    }
-
-
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public Long getModelId() {
@@ -105,7 +94,6 @@ public class Model {
     @Override
     public String toString() {
         return "Model{" +
-                "id=" + id +
                 ", modelId=" + modelId +
                 ", modelName='" + modelName + '\'' +
                 ", modelWeights='" + modelWeights + '\'' +

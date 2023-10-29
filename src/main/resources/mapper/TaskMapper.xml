@@ -3,13 +3,11 @@
 <mapper namespace="com.example.trainimageannotation.dao.TaskDao">
 
     <resultMap id="taskMap" type="com.example.trainimageannotation.po.Task">
-        <id column="id" property="id"/>
         <result column="task_id" property="taskId"/>
         <result column="task_name" property="taskName"/>
         <result column="task_status" property="taskStatus"/>
         <result column="task_type" property="taskType"/>
         <result column="data_id" property="dataId"/>
-        <result column="tag" property="tag"/>
         <result column="task_way" property="taskWay"/>
         <result column="model_id" property="modelId"/>
         <result column="creator" property="creator"/>
@@ -19,17 +17,17 @@
 
 
     <select id="selectTaskList" resultMap="taskMap">
-        SELECT id, task_id, task_name, task_status, task_type, data_id,tag,task_way,model_id,creator,create_time,update_time
+        SELECT task_id, task_name, task_status, task_type, data_id,task_way,model_id,creator,create_time,update_time
         FROM task
         limit #{offset},#{limit}
     </select>
     <select id="selectTaskById" parameterType="java.lang.Long" resultMap="taskMap">
-        SELECT id, task_id, task_name, task_status, task_type, data_id,tag,task_way,model_id,creator,create_time,update_time
+        SELECT task_id, task_name, task_status, task_type, data_id,task_way,model_id,creator,create_time,update_time
         FROM task
         WHERE task_id = #{taskId}
     </select>
     <select id="selectTaskByStatus" resultMap="taskMap">
-        SELECT id, task_id, task_name, task_status, task_type, data_id,tag,task_way,model_id,creator,create_time,update_time
+        SELECT task_id, task_name, task_status, task_type, data_id,task_way,model_id,creator,create_time,update_time
         FROM task
         WHERE task_status in
         <foreach item="item" index="index" collection="taskStatusList" open="(" separator="," close=")">
@@ -37,7 +35,7 @@
         </foreach>
     </select>
     <select id="selectTaskCount" resultType="java.lang.Long">
-        SELECT COUNT(id) FROM task
+        SELECT COUNT(task_id) FROM task
     </select>
     <update id="updateTaskStatus" parameterType="com.example.trainimageannotation.po.Task">
         update task

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.trainimageannotation.dao.LogDao">
+
+    <resultMap id="logMap" type="com.example.trainimageannotation.po.Log">
+        <id column="log_id" property="logId"/>
+        <result column="login_ip" property="loginIp"/>
+        <result column="user_name" property="userName"/>
+        <result column="state" property="state"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
+
+    <select id="selectLogById" resultMap="logMap">
+        SELECT log_id,login_ip,user_name, state, create_time
+        FROM log
+        where log_id = #{logId}
+    </select>
+    <select id="selectLogList" resultMap="logMap">
+        SELECT log_id,login_ip,user_name, state, create_time
+        FROM log
+        limit #{offset},#{limit}
+    </select>
+    <select id="selectLogCount" resultType="java.lang.Long">
+        SELECT COUNT(log_id) FROM log
+    </select>
+
+</mapper>

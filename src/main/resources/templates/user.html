@@ -89,11 +89,11 @@
                         <div class="layui-col-md4">
                             <div class="layui-input-wrap">
                                 <button class="layui-btn" lay-submit lay-filter="demo-table-search">查询</button>
-                                <button type="button" class="layui-btn layui-btn-primary layui-bg-red" lay-on="create-data"><span class="layui-badge-dot"></span>创建数据集</button>
+                                <button type="button" class="layui-btn layui-btn-primary layui-bg-red" lay-on="create-user"><span class="layui-badge-dot"></span>创建用户</button>
                             </div>
                         </div>
                     </form>
-                    </div>
+                </div>
                 <div class="layui-card-body">
                     <table class="layui-hide" id="ID-table-show-data"></table>
                 </div>
@@ -110,11 +110,11 @@
     <div class="layui-clear-space">
         <a class="layui-btn layui-btn-xs" lay-event="edit">修改</a>
         <a class="layui-btn layui-btn-xs" lay-event="del">删除</a>
-        <!--        <a class="layui-btn layui-btn-xs" lay-event="more">-->
-        <!--            更多-->
-        <!--            <i class="layui-icon layui-icon-down"></i>-->
+<!--        <a class="layui-btn layui-btn-xs" lay-event="more">-->
+<!--            更多-->
+<!--            <i class="layui-icon layui-icon-down"></i>-->
 
-        <!--        </a>-->
+<!--        </a>-->
     </div>
 </script>
 <script>
@@ -122,39 +122,32 @@
         var table = layui.table;
         var form = layui.form;
         var util = layui.util;
-        var upload = layui.upload;
-
         // 创建表格实例
         table.render({
             elem: '#ID-table-show-data',
-            url: '/imageanno/data/list', // 此处为静态模拟数据，实际使用时需换成真实接口
+            url: '/imageanno/user/list', // 此处为静态模拟数据，实际使用时需换成真实接口
             cols:
                 [
                     [
                         {type: 'radio', title: '😊', fixed: true}, // 单选框
-                        {field: 'dataId', title: '数据id',hide:true},
-                        {field: 'dataName', title: '数据集名', width: 130},
-                        {field: 'dataInPath', title: '导入路径'},
-                        {field: 'dataOutPath', title: '导出路径'},
-                        {field:'tag', title: '标签集',width: 130},
-                        {field: 'tagWay', title: '标注格式', width: 130,templet: function (d) {
-                                if(d.tagWay === 0){
-                                    return "PascalVOC"
+                        {field: 'userId', title: '用户id',hide:true},
+                        {field: 'userName', title: '用户名', width: 130},
+                        {field: 'password', title: '密码', width: 200},
+                        {field: 'userType', title: '用户类型', width: 130,templet: function (d) {
+                                if(d.userType === 0){
+                                    return "标注人员"
                                 }
-                                if(d.tagWay === 1){
-                                    return "COCO"
+                                if(d.userType === 1){
+                                    return "校验人员"
                                 }
-                                if(d.tagWay === 2){
-                                    return "YOLO"
-                                }
-                                if(d.tagWay === 3){
-                                    return "DOTA"
+                                if(d.userType === 2){
+                                    return "系统管理员"
                                 }
                             }},
                         {field:'createTime', title: '创建时间',width: 200,templet: "<div>{{layui.util.toDateString(d.createTime, 'yyyy-MM-dd HH:mm:ss')}}</div>"},
                         {field:'updateTime', title: '更新时间',width: 200,templet: "<div>{{layui.util.toDateString(d.updateTime, 'yyyy-MM-dd HH:mm:ss')}}</div>"},
-                        {field:'creator', title: '创建人',width: 80},
                         {fixed:'', title:'操作', toolbar: '#barDemo'},
+
                     ]
                 ],
             limits: [10, 20, 50, 100],
@@ -166,44 +159,38 @@
         });
         //弹出层-创建数据集事件
         util.on('lay-on', {
-            'create-data': function(){
+            'create-user': function(){
                 layer.open({
                     type: 1,
                     area: '500px',
                     resize: false,
                     shadeClose: true,
-                    title: '创建数据集',
+                    title: '创建用户',
                     content: `
           <div class="layui-form" lay-filter="filter-test-layer" style="margin: 16px;">
             <div class="demo-login-container">
-              <div class="layui-form-item">数据集名称<span style="color: red;">*</span>
+              <div class="layui-form-item">用户名<span style="color: red;">*</span>
                 <div class="layui-input-wrap">
-                  <input type="text" name="dataName" value="" lay-verify="required" placeholder="数据集名"  autocomplete="off" class="layui-input" lay-affix="clear">
+                  <input type="text" name="dataName" value="" lay-verify="required" placeholder="用户名"  autocomplete="off" class="layui-input" lay-affix="clear">
                 </div>
               </div>
-              <div class="layui-form-item">导入路径<span style="color: red;">*</span>
+              <div class="layui-form-item">密码<span style="color: red;">*</span>
                 <div class="layui-input-wrap">
-                  <input type="text" name="dataInPath" value="" lay-verify="required" placeholder="请写绝对路径"  autocomplete="off" class="layui-input" lay-affix="clear">
+                  <input type="text" name="dataInPath" value="" lay-verify="required" placeholder="***"  autocomplete="off" class="layui-input" lay-affix="clear">
                 </div>
               </div>
-              <div class="layui-form-item">导出路径<span style="color: red;">*</span>
+              <div class="layui-form-item">确认密码<span style="color: red;">*</span>
                 <div class="layui-input-wrap">
-                <input type="text" name="dataOutPath" value="" lay-verify="required" placeholder="请写绝对路径"  autocomplete="off" class="layui-input" lay-affix="clear">
+                <input type="text" name="dataOutPath" value="" lay-verify="required" placeholder="***"  autocomplete="off" class="layui-input" lay-affix="clear">
                 </div>
               </div>
-               <div class="layui-form-item">标签集<span style="color: red;">*</span>
-                <div class="layui-input-wrap">
-                  <textarea name="tag" placeholder="输入标签，请以逗号,分割。注意,如果选择YOLO格式保存，这里的顺序关系到最后标注导出文件的标签顺序" class="layui-textarea"></textarea>
-                </div>
-              </div>
-              <div class="layui-form-item">标注格式<span style="color: red;">*</span>
+              <div class="layui-form-item">角色<span style="color: red;">*</span>
                 <div class="layui-input-wrap">
                   <select name="tagWay">
-                      <option value="">选择标注格式</option>
-                      <option name="tagWay" value="PascalVOC">PascalVOC</option>
-                      <option name="tagWay" value="COCO" disabled>COCO</option>
-                      <option name="tagWay" value="YOLO">YOLO</option>
-                      <option name="tagWay" value="DOTA" disabled>DOTA</option>
+                      <option value="">选择用户角色</option>
+                      <option name="tagWay" value="PascalVOC">标注人员</option>
+                      <option name="tagWay" value="COCO" >校验人员</option>
+                      <option name="tagWay" value="DOTA" >系统管理员</option>
                   </select>
                 </div>
               </div>
@@ -236,6 +223,9 @@
     $('#totask').on("click", function () {
         window.location.href = '/imageanno/task';
     });
+    $('#todata').on("click", function () {
+        window.location.href = '/imageanno/data';
+    });
     $('#tomodel').on("click", function () {
         window.location.href = '/imageanno/model';
     });
@@ -244,9 +234,6 @@
     });
     $('#tocheck').on("click", function () {
         window.location.href = '/imageanno/check';
-    });
-    $('#touser').on("click", function () {
-        window.location.href = '/imageanno/user';
     });
     $('#tolog').on("click", function () {
         window.location.href = '/imageanno/log';

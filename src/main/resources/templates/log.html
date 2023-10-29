@@ -77,6 +77,10 @@
         <div style="padding: 15px;">
             <div class="layui-card layui-panel">
                 <div class="layui-card-header">
+                    登录日志管理
+
+                </div>
+                <div class="layui-card-body">
                     <form class="layui-form layui-row layui-col-space16">
                         <div class="layui-col-md4">
                             <div class="layui-input-wrap">
@@ -89,12 +93,9 @@
                         <div class="layui-col-md4">
                             <div class="layui-input-wrap">
                                 <button class="layui-btn" lay-submit lay-filter="demo-table-search">查询</button>
-                                <button type="button" class="layui-btn layui-btn-primary layui-bg-red" lay-on="create-data"><span class="layui-badge-dot"></span>创建数据集</button>
                             </div>
                         </div>
                     </form>
-                    </div>
-                <div class="layui-card-body">
                     <table class="layui-hide" id="ID-table-show-data"></table>
                 </div>
             </div>
@@ -122,38 +123,26 @@
         var table = layui.table;
         var form = layui.form;
         var util = layui.util;
-        var upload = layui.upload;
-
         // 创建表格实例
         table.render({
             elem: '#ID-table-show-data',
-            url: '/imageanno/data/list', // 此处为静态模拟数据，实际使用时需换成真实接口
+            url: '/imageanno/log/list', // 此处为静态模拟数据，实际使用时需换成真实接口
             cols:
                 [
                     [
                         {type: 'radio', title: '😊', fixed: true}, // 单选框
-                        {field: 'dataId', title: '数据id',hide:true},
-                        {field: 'dataName', title: '数据集名', width: 130},
-                        {field: 'dataInPath', title: '导入路径'},
-                        {field: 'dataOutPath', title: '导出路径'},
-                        {field:'tag', title: '标签集',width: 130},
-                        {field: 'tagWay', title: '标注格式', width: 130,templet: function (d) {
-                                if(d.tagWay === 0){
-                                    return "PascalVOC"
+                        {field: 'id', title: '日志id',hide:true},
+                        {field: 'loginIp', title: '登录IP', width: 130},
+                        {field: 'userName', title: '用户名', width: 130},
+                        {field: 'state', title: '登录状态', width: 130,templet: function (d) {
+                                if(d.state === 0){
+                                    return "失败"
                                 }
-                                if(d.tagWay === 1){
-                                    return "COCO"
-                                }
-                                if(d.tagWay === 2){
-                                    return "YOLO"
-                                }
-                                if(d.tagWay === 3){
-                                    return "DOTA"
+                                if(d.state === 1){
+                                    return "成功"
                                 }
                             }},
-                        {field:'createTime', title: '创建时间',width: 200,templet: "<div>{{layui.util.toDateString(d.createTime, 'yyyy-MM-dd HH:mm:ss')}}</div>"},
-                        {field:'updateTime', title: '更新时间',width: 200,templet: "<div>{{layui.util.toDateString(d.updateTime, 'yyyy-MM-dd HH:mm:ss')}}</div>"},
-                        {field:'creator', title: '创建人',width: 80},
+                        {field:'createTime', title: '创建时间',width:200,templet: "<div>{{layui.util.toDateString(d.createTime, 'yyyy-MM-dd HH:mm:ss')}}</div>"},
                         {fixed:'', title:'操作', toolbar: '#barDemo'},
                     ]
                 ],
@@ -164,77 +153,14 @@
             even: true,
             height: 310
         });
-        //弹出层-创建数据集事件
-        util.on('lay-on', {
-            'create-data': function(){
-                layer.open({
-                    type: 1,
-                    area: '500px',
-                    resize: false,
-                    shadeClose: true,
-                    title: '创建数据集',
-                    content: `
-          <div class="layui-form" lay-filter="filter-test-layer" style="margin: 16px;">
-            <div class="demo-login-container">
-              <div class="layui-form-item">数据集名称<span style="color: red;">*</span>
-                <div class="layui-input-wrap">
-                  <input type="text" name="dataName" value="" lay-verify="required" placeholder="数据集名"  autocomplete="off" class="layui-input" lay-affix="clear">
-                </div>
-              </div>
-              <div class="layui-form-item">导入路径<span style="color: red;">*</span>
-                <div class="layui-input-wrap">
-                  <input type="text" name="dataInPath" value="" lay-verify="required" placeholder="请写绝对路径"  autocomplete="off" class="layui-input" lay-affix="clear">
-                </div>
-              </div>
-              <div class="layui-form-item">导出路径<span style="color: red;">*</span>
-                <div class="layui-input-wrap">
-                <input type="text" name="dataOutPath" value="" lay-verify="required" placeholder="请写绝对路径"  autocomplete="off" class="layui-input" lay-affix="clear">
-                </div>
-              </div>
-               <div class="layui-form-item">标签集<span style="color: red;">*</span>
-                <div class="layui-input-wrap">
-                  <textarea name="tag" placeholder="输入标签，请以逗号,分割。注意,如果选择YOLO格式保存，这里的顺序关系到最后标注导出文件的标签顺序" class="layui-textarea"></textarea>
-                </div>
-              </div>
-              <div class="layui-form-item">标注格式<span style="color: red;">*</span>
-                <div class="layui-input-wrap">
-                  <select name="tagWay">
-                      <option value="">选择标注格式</option>
-                      <option name="tagWay" value="PascalVOC">PascalVOC</option>
-                      <option name="tagWay" value="COCO" disabled>COCO</option>
-                      <option name="tagWay" value="YOLO">YOLO</option>
-                      <option name="tagWay" value="DOTA" disabled>DOTA</option>
-                  </select>
-                </div>
-              </div>
-              <div class="layui-form-item">
-                <button class="layui-btn layui-btn-fluid" lay-submit lay-filter="demo-login">确定</button>
-              </div>
-            </div>
-          </div>
-        `,
-                    success: function(){
-                        // 对弹层中的表单进行初始化渲染
-                        form.render();
-                        // 表单提交事件
-                        form.on('submit(demo-login)', function(data){
-                            var field = data.field; // 获取表单字段值
-                            // 显示填写结果，仅作演示用
-                            layer.alert(JSON.stringify(field), {
-                                title: '当前填写的字段值'
-                            });
-                            // 此处可执行 Ajax 等操作
-                            // …
-                            return false; // 阻止默认 form 跳转
-                        });
-                    }
-                });
-            }
-        })
+
     })
 
     $('#totask').on("click", function () {
         window.location.href = '/imageanno/task';
+    });
+    $('#todata').on("click", function () {
+        window.location.href = '/imageanno/data';
     });
     $('#tomodel').on("click", function () {
         window.location.href = '/imageanno/model';
@@ -248,9 +174,7 @@
     $('#touser').on("click", function () {
         window.location.href = '/imageanno/user';
     });
-    $('#tolog').on("click", function () {
-        window.location.href = '/imageanno/log';
-    });
+
 </script>
 
 </body>

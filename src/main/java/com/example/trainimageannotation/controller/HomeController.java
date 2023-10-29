@@ -18,17 +18,34 @@ public class HomeController {
     public String  task(){
         return "task";
     }
+
     @RequestMapping(value = "/data",method = RequestMethod.GET)
     public String  data(){
         return "data";
     }
+
     @RequestMapping(value = "/model",method = RequestMethod.GET)
     public String  model(){
         return "model";
     }
+
     @RequestMapping(value = "/work",method = RequestMethod.GET)
     public String  work(){
         return "work";
     }
 
+    @RequestMapping(value = "/check",method = RequestMethod.GET)
+    public String  check(){
+        return "check";
+    }
+
+    @RequestMapping(value = "/user",method = RequestMethod.GET)
+    public String  user(){
+        return "user";
+    }
+
+    @RequestMapping(value = "/log",method = RequestMethod.GET)
+    public String  log(){
+        return "log";
+    }
 }

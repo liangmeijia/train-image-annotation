@@ -39,10 +39,8 @@ public class YOLO implements IoperationTag{
         String fileName = annoSaveVo.getFileName();
         String[] fileNameArr = fileName.split("\\.");
         String saveTxt = dataOutPath+"\\"+fileNameArr[0]+".txt";
-        String currentTaskId = annoSaveVo.getCurrentTaskId();
-        Task task = taskService.showTaskById(Long.valueOf(currentTaskId));
         //tag
-        Map<String, Integer> tagMap = getTagMap2save(task);
+        Map<String, Integer> tagMap = getTagMap2save(data);
         //saveTxt文件存在，则删除
         File file = new File(saveTxt);
         if (file.exists() && file.isFile()) {
@@ -72,7 +70,7 @@ public class YOLO implements IoperationTag{
     }
 
     @Override
-    public List<AnnotationsW3c> showXml(String fileName, Task task,Data data) {
+    public List<AnnotationsW3c> showXml(String fileName,Data data) {
         String dataInPath = data.getDataInPath();
         String dataOutPath = data.getDataOutPath();
 
@@ -80,7 +78,7 @@ public class YOLO implements IoperationTag{
         String[] split = fileName.split("\\.");
         String saveXml = dataOutPath+"\\"+split[0]+".txt";
         //tag
-        Map<Integer,String> tagMap = getTagMap2show(task);
+        Map<Integer,String> tagMap = getTagMap2show(data);
 
         try {
             String readFile = ReadFileUtil.readFile(new File(saveXml));
@@ -141,11 +139,11 @@ public class YOLO implements IoperationTag{
 
     /**
      * 标签保存对应关系
-     * @param task 任务
+     * @param data 数据集
      * @return
      */
-    public Map<String,Integer> getTagMap2save(Task task){
-        String tag = task.getTag();
+    public Map<String,Integer> getTagMap2save(Data data){
+        String tag = data.getTag();
         String[] tagArr = tag.split("\\,");
         Map<String,Integer> tagMap = new HashMap<>(tagArr.length);
         for (int i=0;i<tagArr.length;i++){
@@ -156,11 +154,11 @@ public class YOLO implements IoperationTag{
 
     /**
      * 标签显示对应关系
-     * @param task 任务
+     * @param data 数据集
      * @return
      */
-    public Map<Integer,String> getTagMap2show(Task task){
-        String tag = task.getTag();
+    public Map<Integer,String> getTagMap2show(Data data){
+        String tag = data.getTag();
         String[] tagArr = tag.split("\\,");
         Map<Integer,String> tagMap = new HashMap<>(tagArr.length);
         for (int i=0;i<tagArr.length;i++){

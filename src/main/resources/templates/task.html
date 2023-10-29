@@ -19,28 +19,34 @@
 <body>
 <div class="layui-layout layui-layout-admin">
     <div class="layui-header">
-        <div class="layui-logo layui-hide-xs layui-bg-black">Image Anno</div>
+        <div class="layui-logo layui-hide-xs layui-bg-black">图像自动标注系统</div>
         <!-- 头部区域（可配合layui 已有的水平导航） -->
         <ul class="layui-nav layui-layout-left">
             <!-- 移动端显示 -->
             <li class="layui-nav-item layui-show-xs-inline-block layui-hide-sm" lay-header-event="menuLeft">
                 <i class="layui-icon layui-icon-spread-left"></i>
             </li>
-            <li class="layui-nav-item layui-hide-xs"><a href="javascript:;" id="todata">数据集</a></li>
+            <li class="layui-nav-item layui-hide-xs"><a href="javascript:;" id="todata">数据</a></li>
             <li class="layui-nav-item layui-hide-xs"><a href="javascript:;" id="tomodel">模型</a></li>
             <li class="layui-nav-item layui-nav-itemed layui-hide-xs"><a href="javascript:;" id="totask">任务</a></li>
-            <li class="layui-nav-item"><a href="javascript:;" id="towork">工作台</a></li>
+            <li class="layui-nav-item"><a href="javascript:;" id="towork">标注</a></li>
+            <li class="layui-nav-item"><a href="javascript:;" id="tocheck">校验</a></li>
+            <li class="layui-nav-item"><a href="javascript:;">系统管理</a>
+                <dl class="layui-nav-child">
+                    <dd><a href="javascript:;" id="touser">用户管理</a></dd>
+                    <dd><a href="javascript:;" id="tolog">登录日志</a></dd>
+                </dl>
+            </li>
         </ul>
         <ul class="layui-nav layui-layout-right">
             <li class="layui-nav-item layui-hide layui-show-sm-inline-block">
                 <a href="javascript:;">
                     <img src="//unpkg.com/outeres@0.0.10/img/layui/icon-v2.png" class="layui-nav-img">
-                    tester
+                    Admin
                 </a>
                 <dl class="layui-nav-child">
-                    <dd><a href="javascript:;">Your Profile</a></dd>
-                    <dd><a href="javascript:;">Settings</a></dd>
-                    <dd><a href="javascript:;">Sign out</a></dd>
+                    <dd><a href="javascript:;">个人主页</a></dd>
+                    <dd><a href="javascript:;">退出</a></dd>
                 </dl>
             </li>
             <li class="layui-nav-item" lay-header-event="menuRight" lay-unselect>
@@ -96,19 +102,19 @@
     </div>
     <div class="layui-footer">
         <!-- 底部固定区域 -->
-        底部固定区域
+        图像标注软件v1
     </div>
 </div>
 <script type="text/html" id="barDemo">
     <div class="layui-clear-space">
-        <a class="layui-btn layui-btn-xs layui-bg-red" lay-event="auto_anno">智能标注</a>
-        <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-        <a class="layui-btn layui-btn-xs" lay-event="down_anno">下载</a>
-        <a class="layui-btn layui-btn-xs" lay-event="more">
-            更多
-            <i class="layui-icon layui-icon-down"></i>
+<!--        <a class="layui-btn layui-btn-xs layui-bg-red" lay-event="auto_anno">自动标注</a>-->
+        <a class="layui-btn layui-btn-xs" lay-event="edit">修改</a>
+        <a class="layui-btn layui-btn-xs" lay-event="del">删除</a>
+        <!--        <a class="layui-btn layui-btn-xs" lay-event="more">-->
+        <!--            更多-->
+        <!--            <i class="layui-icon layui-icon-down"></i>-->
 
-        </a>
+        <!--        </a>-->
     </div>
 </script>
 <script>
@@ -126,8 +132,7 @@
                 [
                     [
                         {type: 'radio', title: '😊', fixed: true}, // 单选框
-                        {field:'id', title: 'ID', width:40, sort: true, fixed: true},
-                        {field:'taskId', title: 'taskId', hide:true},
+                        {field:'taskId', title: 'taskId', sort: true,hide:true},
                         {field:'taskName', title: '任务名', width:130},
                         {field:'taskStatus', title: '状态', width:160, templet: function (d) {
                             if(d.taskStatus === 0){
@@ -169,27 +174,28 @@
                             }},
                         {field:'taskType', title: '标注类型', width:130 ,templet:function (d) {
                                 if(d.taskType === 0){
-                                    return "图像分类";
+                                    return "语义标注";
                                 }if(d.taskType === 1){
-                                    return "物体检测";
+                                    return "目标检测标注";
                                 }if(d.taskType === 2){
-                                    return "图像分割";
+                                    return "图像分割标注";
+                                }if(d.taskType === 3){
+                                    return "3D信息标注";
                                 }
                             }},
-                        {field:'dataName', title: '数据集名', width:130},
-                        {field:'tag', title: '标签集',width: 130},
                         {field:'taskWay', title: '标注方式', width:130,templet:function (d) {
                                 if(d.taskWay === 0){
                                     return "手工标注";
                                 }if(d.taskWay === 1){
-                                    return "智能标注";
+                                    return "自动标注";
                                 }
                             }},
-                        {field:'modelName', title: '标注模型', width:130},
-                        {fixed:'', title:'操作', toolbar: '#barDemo'},
-                        {field:'createTime', title: '创建时间',width: 100, sort: true},
-                        {field:'updateTime', title: '更新时间',width: 100, sort: true},
+                        {field:'dataName', title: '数据集名', width:130},
+                        {field:'modelName', title: '标注模型', width:150},
+                        {field:'createTime', title: '创建时间',width: 200, sort: true,templet: "<div>{{layui.util.toDateString(d.createTime, 'yyyy-MM-dd HH:mm:ss')}}</div>"},
+                        {field:'updateTime', title: '更新时间',width: 200, sort: true,templet: "<div>{{layui.util.toDateString(d.updateTime, 'yyyy-MM-dd HH:mm:ss')}}</div>"},
                         {field:'creator', title: '创建人',width: 80},
+                        {fixed:'', title:'操作', toolbar: '#barDemo'},
                     ]
                 ],
             limits: [10, 20, 50, 100],
@@ -206,42 +212,83 @@
             var taskId = data.taskId;
             // console.log(obj)
             if(obj.event === 'auto_anno'){
-                $.ajax({
-                    url:"/imageanno/task/updateStatus",
-                    data:{taskId:taskId,status:data.taskStatus+1},
-                    type:"POST",
-                    success:function (data) {
-                        if(data === "success"){
-                            //刷新表格
-                            table.reloadData('ID-table-demo-search', {
-                                url: '/imageanno/task/list',
-                                where: {key: ''}
+
+            } else if(obj.event === 'edit'){
+                console.log("edit")
+                layer.open({
+                    type: 1,
+                    area: '500px',
+                    resize: false,
+                    shadeClose: true,
+                    title: '修改任务',
+                    content: `
+          <div class="layui-form" lay-filter="filter-test-layer" style="margin: 16px;">
+            <div class="demo-login-container">
+              <div class="layui-form-item">任务名称<span style="color: red;">*</span>
+                <div class="layui-input-wrap">
+                  <input type="text" name="taskName" value="" lay-verify="required" placeholder="任务名"  autocomplete="off" class="layui-input" lay-affix="clear">
+                </div>
+              </div>
+              <div class="layui-form-item">标注类型<span style="color: red;">*</span>
+                <div class="layui-input-wrap">
+                  <input type="radio" name="taskType" value="1" title="语义标注" disabled>
+                  <input type="radio" name="taskType" value="2" title="目标检测标注" checked>
+                  <input type="radio" name="taskType" value="3" title="图像分割标注" disabled>
+                  <input type="radio" name="taskType" value="3" title="3D信息标注" disabled>
+                </div>
+              </div>
+              <div class="layui-form-item">标注方式<span style="color: red;">*</span>
+                <div class="layui-input-wrap">
+                  <input type="radio" name="taskWay" value="1" title="手工标注">
+                  <input type="radio" name="taskWay" value="2" title="自动标注" checked>
+                </div>
+              </div>
+              <div class="layui-form-item">数据集<span style="color: red;">*</span>
+                <div class="layui-input-wrap">
+                  <select name="dataName">
+                      <option value="">选择数据集</option>
+                      <option name="dataName" value="AAA">测试数据集1</option>
+                      <option name="dataName" value="BBB" >测试数据集2</option>
+                      <option name="dataName" value="CCC">测试数据集3</option>
+                      <option name="dataName" value="CCC" disabled>测试数据集4</option>
+                  </select>
+                </div>
+              </div>
+              <div class="layui-form-item">标注模型<span style="color: red;">*</span>
+                <div class="layui-input-wrap">
+                  <select name="modelName">
+                      <option value="">选择标注模型</option>
+                      <option name="modelName" value="AAA">YOLOv5s-LTOEI</option>
+                      <option name="modelName" value="BBB" >YOLOv5s</option>
+                      <option name="modelName" value="BBB" >无</option>
+                  </select>
+                </div>
+              </div>
+              <div class="layui-form-item">
+                <button class="layui-btn layui-btn-fluid" lay-submit lay-filter="demo-login">确定</button>
+              </div>
+            </div>
+          </div>
+        `,
+                    success: function(){
+                        // 对弹层中的表单进行初始化渲染
+                        form.render();
+                        // 表单提交事件
+                        form.on('submit(demo-login)', function(data){
+                            var field = data.field; // 获取表单字段值
+                            // 显示填写结果，仅作演示用
+                            layer.alert(JSON.stringify(field), {
+                                title: '当前填写的字段值'
                             });
-                            //开始自动标注
-                            $.ajax({
-                                url:"/imageanno/work/auto_anno",
-                                data:{taskId:taskId},
-                                type:"POST",
-                                success:function (data) {
-                                    // var jsonObj = JSON.parse(data);
-                                    console.log(data);
-                                    alert(data.info);
-                                    //刷新表格
-                                    table.reloadData('ID-table-demo-search', {
-                                        url: '/imageanno/task/list',
-                                        where: {key: ''}
-                                    });
-                                    // if(data.msg === "success"){
-                                    //     // window.location.href = '/imageanno/anno?taskId='+taskId;
-                                    // }
-                                },
-                            });
-                        }
-                    },
+                            // 此处可执行 Ajax 等操作
+                            // …
+                            return false; // 阻止默认 form 跳转
+                        });
+                    }
                 });
-            } else if(obj.event === 'more'){
-                console.log("more")
-            } else if(obj.event === 'down_anno'){
+            }  else if(obj.event === 'del'){
+                console.log("del")
+            }else if(obj.event === 'down_anno'){
                 //1.获取本地下载地址
                 layer.prompt({title: '请输入本地下载地址'}, function(value, index, elem){
                     if(value === '') return elem.focus();
@@ -276,7 +323,7 @@
                     area: '500px',
                     resize: false,
                     shadeClose: true,
-                    title: '创建标注任务',
+                    title: '创建任务',
                     content: `
           <div class="layui-form" lay-filter="filter-test-layer" style="margin: 16px;">
             <div class="demo-login-container">
@@ -287,39 +334,35 @@
               </div>
               <div class="layui-form-item">标注类型<span style="color: red;">*</span>
                 <div class="layui-input-wrap">
-                  <input type="radio" name="taskType" value="1" title="图像分类" disabled>
-                  <input type="radio" name="taskType" value="2" title="物体检测" checked>
-                  <input type="radio" name="taskType" value="3" title="图像分割" disabled>
+                  <input type="radio" name="taskType" value="1" title="语义标注" disabled>
+                  <input type="radio" name="taskType" value="2" title="目标检测标注" checked>
+                  <input type="radio" name="taskType" value="3" title="图像分割标注" disabled>
+                  <input type="radio" name="taskType" value="3" title="3D信息标注" disabled>
+                </div>
+              </div>
+              <div class="layui-form-item">标注方式<span style="color: red;">*</span>
+                <div class="layui-input-wrap">
+                  <input type="radio" name="taskWay" value="1" title="手工标注">
+                  <input type="radio" name="taskWay" value="2" title="自动标注" checked>
                 </div>
               </div>
               <div class="layui-form-item">数据集<span style="color: red;">*</span>
                 <div class="layui-input-wrap">
                   <select name="dataName">
                       <option value="">选择数据集</option>
-                      <option name="dataName" value="AAA">选项 A</option>
-                      <option name="dataName" value="BBB" disabled>选项 B（禁用选项）</option>
-                      <option name="dataName" value="CCC">选项 C</option>
+                      <option name="dataName" value="AAA">测试数据集1</option>
+                      <option name="dataName" value="BBB" >测试数据集2</option>
+                      <option name="dataName" value="CCC">测试数据集3</option>
+                      <option name="dataName" value="CCC" disabled>测试数据集4</option>
                   </select>
-                </div>
-              </div>
-              <div class="layui-form-item">标签集<span style="color: red;">*</span>
-                <div class="layui-input-wrap">
-                  <textarea name="tag" placeholder="输入标签，请以逗号,分割" class="layui-textarea"></textarea>
-                </div>
-              </div>
-              <div class="layui-form-item">标注方式<span style="color: red;">*</span>
-                <div class="layui-input-wrap">
-                  <input type="radio" name="taskWay" value="1" title="手工标注">
-                  <input type="radio" name="taskWay" value="2" title="智能标注" checked>
                 </div>
               </div>
               <div class="layui-form-item">标注模型<span style="color: red;">*</span>
                 <div class="layui-input-wrap">
                   <select name="modelName">
                       <option value="">选择标注模型</option>
-                      <option name="modelName" value="AAA">选项 A</option>
-                      <option name="modelName" value="BBB" disabled>选项 B（禁用选项）</option>
-                      <option name="modelName" value="CCC">选项 C</option>
+                      <option name="modelName" value="AAA">YOLOv5s-LTOEI</option>
+                      <option name="modelName" value="BBB" >YOLOv5s</option>
                   </select>
                 </div>
               </div>
@@ -359,7 +402,15 @@
     $('#towork').on("click", function () {
         window.location.href = '/imageanno/work';
     });
-
+    $('#tocheck').on("click", function () {
+        window.location.href = '/imageanno/check';
+    });
+    $('#touser').on("click", function () {
+        window.location.href = '/imageanno/user';
+    });
+    $('#tolog').on("click", function () {
+        window.location.href = '/imageanno/log';
+    });
 </script>
 </body>
 </html>
